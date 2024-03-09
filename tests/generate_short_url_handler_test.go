@@ -1,6 +1,7 @@
-package handlers
+package tests
 
 import (
+	"github.com/andranikuz/shortener/internal/handlers"
 	"github.com/andranikuz/shortener/internal/storage"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -77,7 +78,7 @@ func TestGenerateShortUrlHandler(t *testing.T) {
 			request := httptest.NewRequest(http.MethodPost, test.args.request, reader)
 			// создаём новый Recorder
 			w := httptest.NewRecorder()
-			GenerateShortURLHandler(w, request)
+			handlers.GenerateShortURLHandler(w, request)
 
 			res := w.Result()
 			// проверяем код ответа

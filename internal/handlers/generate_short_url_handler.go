@@ -28,7 +28,7 @@ func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request) {
 
 	res.WriteHeader(http.StatusCreated)
 	res.Header().Set("Content-Type", "text/plain")
-	if _, err := res.Write([]byte(shortURL)); err != nil {
+	if _, err := io.WriteString(res, shortURL); err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
 		return
 	}
