@@ -73,6 +73,7 @@ func TestGetFullURLHandler(t *testing.T) {
 			storage.Save(url)
 		}
 		res := testRequest(t, ts, http.MethodGet, test.args.request)
+		defer res.Body.Close()
 		assert.Equal(t, test.want.code, res.StatusCode)
 		assert.Equal(t, test.want.location, res.Header.Get("Location"))
 	}
