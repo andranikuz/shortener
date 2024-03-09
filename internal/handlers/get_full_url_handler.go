@@ -17,7 +17,6 @@ func GetFullURLHandler(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	res.Header().Set("Location", fullURL)
 	res.WriteHeader(http.StatusTemporaryRedirect)
 }

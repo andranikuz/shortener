@@ -10,11 +10,9 @@ import (
 	"testing"
 )
 
-func testRequest(t *testing.T, ts *httptest.Server, method,
-	path string) *http.Response {
-	req, err := http.NewRequest(method, ts.URL+path, nil)
+func testRequest(t *testing.T, ts *httptest.Server, path string) *http.Response {
+	req, err := http.NewRequest(http.MethodGet, ts.URL+path, nil)
 	require.NoError(t, err)
-
 	resp, err := ts.Client().Do(req)
 	require.NoError(t, err)
 	defer resp.Body.Close()
@@ -45,7 +43,7 @@ func TestGetFullURLHandler(t *testing.T) {
 			args: args{
 				request: "/id",
 				urls: map[string]storage.URL{
-					"id1": {
+					"id": {
 						ID:      "id",
 						FullURL: "http://google.com",
 					},
@@ -72,7 +70,7 @@ func TestGetFullURLHandler(t *testing.T) {
 		for _, url := range test.args.urls {
 			storage.Save(url)
 		}
-		res := testRequest(t, ts, http.MethodGet, test.args.request)
+		res := testRequest(t, ts, test.args.request)
 		defer res.Body.Close()
 		assert.Equal(t, test.want.code, res.StatusCode)
 		assert.Equal(t, test.want.location, res.Header.Get("Location"))
