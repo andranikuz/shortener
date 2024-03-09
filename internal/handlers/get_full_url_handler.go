@@ -2,12 +2,12 @@ package handlers
 
 import (
 	"github.com/andranikuz/shortener/internal/app/usecases"
+	"github.com/go-chi/chi/v5"
 	"net/http"
-	"strings"
 )
 
 func GetFullURLHandler(res http.ResponseWriter, req *http.Request) {
-	id := strings.ReplaceAll(req.RequestURI, "/", "")
+	id := chi.URLParam(req, "id")
 	if id == "" {
 		res.WriteHeader(http.StatusBadRequest)
 		return
