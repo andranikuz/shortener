@@ -15,7 +15,7 @@ func noRedirect(req *http.Request, via []*http.Request) error {
 }
 
 func testRequest(t *testing.T, ts *httptest.Server, path string) *http.Response {
-	req, err := http.NewRequest(http.MethodGet, ts.URL+path, nil)
+	req, _ := http.NewRequest(http.MethodGet, ts.URL+path, nil)
 	client := &http.Client{
 		CheckRedirect: noRedirect,
 	}
