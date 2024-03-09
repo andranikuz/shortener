@@ -1,4 +1,4 @@
-package api
+package handlers
 
 import (
 	"github.com/andranikuz/shortener/internal/app/usecases"
@@ -15,6 +15,7 @@ func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
 	body, _ := io.ReadAll(req.Body)
 
 	fullURL := string(body)
@@ -24,11 +25,11 @@ func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request) {
 	}
 
 	shortURL := usecases.GenerateShortURL(fullURL)
+
 	res.WriteHeader(http.StatusCreated)
+	res.Header().Set("Content-Type", "text/plain")
 	if _, err := res.Write([]byte(shortURL)); err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	res.Header().Set("Content-Type", "text/plain")
-
 }

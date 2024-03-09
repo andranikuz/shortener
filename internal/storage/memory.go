@@ -10,7 +10,7 @@ type URL struct {
 	FullURL string
 }
 
-var Database *memdb.MemDB
+var db *memdb.MemDB
 
 // Init memory DB
 func Init() {
@@ -30,7 +30,7 @@ func Init() {
 	}
 	var err error
 	// Create database
-	Database, err = memdb.NewMemDB(schema)
+	db, err = memdb.NewMemDB(schema)
 	if err != nil {
 		panic(err)
 	}
@@ -38,7 +38,7 @@ func Init() {
 
 // Save url
 func Save(url URL) error {
-	txn := Database.Txn(true)
+	txn := db.Txn(true)
 	defer txn.Abort()
 
 	if err := txn.Insert("url", url); err != nil {
@@ -51,7 +51,7 @@ func Save(url URL) error {
 
 // Get url
 func Get(id string) (*URL, error) {
-	txn := Database.Txn(false)
+	txn := db.Txn(false)
 	defer txn.Abort()
 	raw, err := txn.First("url", "id", id)
 	if err != nil {
