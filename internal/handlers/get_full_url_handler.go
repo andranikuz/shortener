@@ -1,4 +1,4 @@
-package api
+package handlers
 
 import (
 	"github.com/andranikuz/shortener/internal/app/usecases"
