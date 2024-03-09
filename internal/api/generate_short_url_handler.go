@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func GenerateShortUrlHandler(res http.ResponseWriter, req *http.Request) {
+func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request) {
 	if req.RequestURI != "/" {
 		res.WriteHeader(http.StatusBadRequest)
 		return
@@ -17,15 +17,15 @@ func GenerateShortUrlHandler(res http.ResponseWriter, req *http.Request) {
 	}
 	body, _ := io.ReadAll(req.Body)
 
-	fullUrl := string(body)
-	if fullUrl == "" {
+	fullURL := string(body)
+	if fullURL == "" {
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	shortUrl := usecases.GenerateShortUrl(fullUrl)
+	shortURL := usecases.GenerateShortURL(fullURL)
 	res.WriteHeader(http.StatusCreated)
-	if _, err := res.Write([]byte(shortUrl)); err != nil {
+	if _, err := res.Write([]byte(shortURL)); err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
 		return
 	}

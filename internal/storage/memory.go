@@ -5,9 +5,9 @@ import (
 	"github.com/hashicorp/go-memdb"
 )
 
-type Url struct {
-	Id  string
-	Url string
+type URL struct {
+	ID      string
+	FullURL string
 }
 
 var Database *memdb.MemDB
@@ -22,7 +22,7 @@ func Init() {
 					"id": &memdb.IndexSchema{
 						Name:    "id",
 						Unique:  true,
-						Indexer: &memdb.StringFieldIndex{Field: "Id"},
+						Indexer: &memdb.StringFieldIndex{Field: "ID"},
 					},
 				},
 			},
@@ -37,12 +37,12 @@ func Init() {
 }
 
 // Save url
-func Save(url Url) error {
+func Save(url URL) error {
 	txn := Database.Txn(true)
 	defer txn.Abort()
 
 	if err := txn.Insert("url", url); err != nil {
-		return fmt.Errorf("Saving url error id=%s url=%s", url.Id, url.Url)
+		return fmt.Errorf("saving url error id=%s url=%s", url.ID, url.FullURL)
 	}
 	txn.Commit()
 
@@ -50,17 +50,17 @@ func Save(url Url) error {
 }
 
 // Get url
-func Get(id string) (*Url, error) {
+func Get(id string) (*URL, error) {
 	txn := Database.Txn(false)
 	defer txn.Abort()
 	raw, err := txn.First("url", "id", id)
 	if err != nil {
-		return nil, fmt.Errorf("Getting index %s error", id)
+		return nil, fmt.Errorf("getting index %s error", id)
 	}
 
-	url, ok := raw.(Url)
+	url, ok := raw.(URL)
 	if !ok {
-		return nil, fmt.Errorf("Index %s not found", id)
+		return nil, fmt.Errorf("index %s not found", id)
 	}
 
 	return &url, nil

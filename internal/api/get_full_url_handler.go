@@ -6,17 +6,17 @@ import (
 	"strings"
 )
 
-func GetFullUrlHandler(res http.ResponseWriter, req *http.Request) {
+func GetFullURLHandler(res http.ResponseWriter, req *http.Request) {
 	id := strings.ReplaceAll(req.RequestURI, "/", "")
 	if id == "" {
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fullUrl := usecases.GetFullUrl(id)
-	if fullUrl == "" {
+	fullURL := usecases.GetFullURL(id)
+	if fullURL == "" {
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	res.Header().Set("Location", fullUrl)
+	res.Header().Set("Location", fullURL)
 	res.WriteHeader(http.StatusTemporaryRedirect)
 }

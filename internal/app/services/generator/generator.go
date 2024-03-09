@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-func GenerateUniqueId() string {
+func GenerateUniqueID() string {
 	hd := hashids.NewData()
 	hashids.NewWithData(hd)
 	h, _ := hashids.NewWithData(hd)
