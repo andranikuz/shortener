@@ -1,8 +1,9 @@
 package usecases
 
 import (
-	"github.com/andranikuz/shortener/internal/app/services/generator"
+	"github.com/andranikuz/shortener/internal/config"
 	"github.com/andranikuz/shortener/internal/storage"
+	"github.com/andranikuz/shortener/internal/utils/generator"
 )
 
 func GenerateShortURL(fullURL string) string {
@@ -12,5 +13,5 @@ func GenerateShortURL(fullURL string) string {
 		return ""
 	}
 
-	return "http://localhost:8080/" + id
+	return config.Config.DefaultHost + "/" + id
 }
