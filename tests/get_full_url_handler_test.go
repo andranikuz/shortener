@@ -10,10 +10,16 @@ import (
 	"testing"
 )
 
+func noRedirect(req *http.Request, via []*http.Request) error {
+	return http.ErrUseLastResponse
+}
+
 func testRequest(t *testing.T, ts *httptest.Server, path string) *http.Response {
 	req, err := http.NewRequest(http.MethodGet, ts.URL+path, nil)
-	require.NoError(t, err)
-	resp, err := ts.Client().Do(req)
+	client := &http.Client{
+		CheckRedirect: noRedirect,
+	}
+	resp, err := client.Do(req)
 	require.NoError(t, err)
 	defer resp.Body.Close()
 
@@ -22,7 +28,7 @@ func testRequest(t *testing.T, ts *httptest.Server, path string) *http.Response 
 
 func TestGetFullURLHandler(t *testing.T) {
 	app := app.Application{}
-	app.Init()
+	storage.Init()
 	ts := httptest.NewServer(app.Router())
 	defer ts.Close()
 	type want struct {
@@ -45,13 +51,13 @@ func TestGetFullURLHandler(t *testing.T) {
 				urls: map[string]storage.URL{
 					"id": {
 						ID:      "id",
-						FullURL: "http://google.com",
+						FullURL: "http://test.com",
 					},
 				},
 			},
 			want: want{
 				code:     307,
-				location: "http://google.com",
+				location: "http://test.com",
 			},
 		},
 		{
