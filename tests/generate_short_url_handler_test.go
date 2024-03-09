@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/andranikuz/shortener/internal/handlers"
+	"github.com/andranikuz/shortener/internal/app"
 	"github.com/andranikuz/shortener/internal/storage"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -13,6 +13,9 @@ import (
 )
 
 func TestGenerateShortUrlHandler(t *testing.T) {
+	app := app.Application{}
+	storage.Init()
+	ts := httptest.NewServer(app.Router())
 	type want struct {
 		code     int
 		response string
@@ -75,18 +78,13 @@ func TestGenerateShortUrlHandler(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			reader := strings.NewReader(test.args.url)
-			request := httptest.NewRequest(http.MethodPost, test.args.request, reader)
-			// создаём новый Recorder
-			w := httptest.NewRecorder()
-			handlers.GenerateShortURLHandler(w, request)
-
-			res := w.Result()
+			req, _ := http.NewRequest(http.MethodPost, ts.URL+test.args.request, reader)
+			res, err := ts.Client().Do(req)
+			require.NoError(t, err)
+			defer res.Body.Close()
 			// проверяем код ответа
 			assert.Equal(t, test.want.code, res.StatusCode)
-			// получаем и проверяем тело запроса
-			defer res.Body.Close()
 			resBody, err := io.ReadAll(res.Body)
-
 			require.NoError(t, err)
 			assert.Contains(t, string(resBody), test.want.response)
 		})

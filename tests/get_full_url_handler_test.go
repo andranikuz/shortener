@@ -14,18 +14,6 @@ func noRedirect(req *http.Request, via []*http.Request) error {
 	return http.ErrUseLastResponse
 }
 
-func testRequest(t *testing.T, ts *httptest.Server, path string) *http.Response {
-	req, _ := http.NewRequest(http.MethodGet, ts.URL+path, nil)
-	client := &http.Client{
-		CheckRedirect: noRedirect,
-	}
-	resp, err := client.Do(req)
-	require.NoError(t, err)
-	defer resp.Body.Close()
-
-	return resp
-}
-
 func TestGetFullURLHandler(t *testing.T) {
 	app := app.Application{}
 	storage.Init()
@@ -71,14 +59,32 @@ func TestGetFullURLHandler(t *testing.T) {
 				location: "",
 			},
 		},
+		{
+			name: "id not presented",
+			args: args{
+				request: "/",
+				urls:    map[string]storage.URL{},
+			},
+			want: want{
+				code:     400,
+				location: "",
+			},
+		},
 	}
 	for _, test := range tests {
-		for _, url := range test.args.urls {
-			storage.Save(url)
-		}
-		res := testRequest(t, ts, test.args.request)
-		defer res.Body.Close()
-		assert.Equal(t, test.want.code, res.StatusCode)
-		assert.Equal(t, test.want.location, res.Header.Get("Location"))
+		t.Run(test.name, func(t *testing.T) {
+			for _, url := range test.args.urls {
+				storage.Save(url)
+			}
+			req, _ := http.NewRequest(http.MethodGet, ts.URL+test.args.request, nil)
+			client := &http.Client{
+				CheckRedirect: noRedirect,
+			}
+			res, err := client.Do(req)
+			require.NoError(t, err)
+			defer res.Body.Close()
+			assert.Equal(t, test.want.code, res.StatusCode)
+			assert.Equal(t, test.want.location, res.Header.Get("Location"))
+		})
 	}
 }
