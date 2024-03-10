@@ -2,7 +2,6 @@ package tests
 
 import (
 	"github.com/andranikuz/shortener/internal/app"
-	"github.com/andranikuz/shortener/internal/storage"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"io"
@@ -14,7 +13,7 @@ import (
 
 func TestGenerateShortUrlHandler(t *testing.T) {
 	app := app.Application{}
-	storage.Init()
+	app.Init()
 	ts := httptest.NewServer(app.Router())
 	type want struct {
 		code     int
@@ -74,7 +73,6 @@ func TestGenerateShortUrlHandler(t *testing.T) {
 			},
 		},
 	}
-	storage.Init()
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			reader := strings.NewReader(test.args.url)
