@@ -41,7 +41,7 @@ func TestGenerateShortUrlHandler(t *testing.T) {
 			},
 		},
 		{
-			name: "Positive test short url",
+			name: "Positive test long url",
 			args: args{
 				request: "/",
 				url:     "http://googlegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegoogle/bigbigbigbigbig",
