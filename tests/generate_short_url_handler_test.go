@@ -2,6 +2,7 @@ package tests
 
 import (
 	"github.com/andranikuz/shortener/internal/app"
+	"github.com/andranikuz/shortener/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"io"
@@ -36,7 +37,7 @@ func TestGenerateShortUrlHandler(t *testing.T) {
 			},
 			want: want{
 				code:     201,
-				response: "http://localhost:8080/",
+				response: config.Config.BaseURL,
 			},
 		},
 		{
@@ -47,7 +48,7 @@ func TestGenerateShortUrlHandler(t *testing.T) {
 			},
 			want: want{
 				code:     201,
-				response: "http://localhost:8080/",
+				response: config.Config.BaseURL,
 			},
 		},
 		{

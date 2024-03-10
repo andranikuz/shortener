@@ -13,7 +13,7 @@ type Application struct {
 
 func (app *Application) Run() {
 	app.Init()
-	http.ListenAndServe(config.Config.RunAddr, app.Router())
+	http.ListenAndServe(config.Config.ServerAddress, app.Router())
 }
 
 func (app *Application) Init() {
