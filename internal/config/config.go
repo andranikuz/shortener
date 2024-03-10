@@ -10,8 +10,7 @@ type AppConfig struct {
 var Config AppConfig
 
 func Init() {
-	runAddr := *flag.String("a", "localhost:8080", "address and port to run server")
-	defaultHost := *flag.String("b", "http://localhost:8080", "default url host")
+	flag.StringVar(&Config.RunAddr, "a", "localhost:8080", "address and port to run server")
+	flag.StringVar(&Config.DefaultHost, "b", "http://localhost:8080", "default url host")
 	flag.Parse()
-	Config = AppConfig{RunAddr: runAddr, DefaultHost: defaultHost}
 }
