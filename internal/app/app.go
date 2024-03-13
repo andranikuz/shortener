@@ -1,11 +1,13 @@
 package app
 
 import (
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+
 	"github.com/andranikuz/shortener/internal/config"
 	"github.com/andranikuz/shortener/internal/handlers"
 	"github.com/andranikuz/shortener/internal/storage"
-	"github.com/go-chi/chi/v5"
-	"net/http"
 )
 
 type Application struct {

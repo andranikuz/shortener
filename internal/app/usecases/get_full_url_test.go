@@ -1,9 +1,11 @@
 package usecases
 
 import (
-	"github.com/andranikuz/shortener/internal/storage"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/andranikuz/shortener/internal/storage"
 )
 
 func TestGetFullURL(t *testing.T) {

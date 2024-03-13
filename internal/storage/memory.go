@@ -2,6 +2,7 @@ package storage
 
 import (
 	"fmt"
+
 	"github.com/hashicorp/go-memdb"
 )
 
@@ -13,7 +14,7 @@ type URL struct {
 var db *memdb.MemDB
 
 // Init memory DB
-func Init() {
+func Init() error {
 	schema := &memdb.DBSchema{
 		Tables: map[string]*memdb.TableSchema{
 			"url": &memdb.TableSchema{
@@ -32,8 +33,10 @@ func Init() {
 	// Create database
 	db, err = memdb.NewMemDB(schema)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("init DB error")
 	}
+
+	return nil
 }
 
 // Save url

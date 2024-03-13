@@ -1,15 +1,17 @@
 package tests
 
 import (
-	"github.com/andranikuz/shortener/internal/app"
-	"github.com/andranikuz/shortener/internal/config"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/andranikuz/shortener/internal/app"
+	"github.com/andranikuz/shortener/internal/config"
 )
 
 func TestGenerateShortUrlHandler(t *testing.T) {
