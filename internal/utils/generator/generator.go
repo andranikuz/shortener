@@ -1,8 +1,9 @@
 package generator
 
 import (
-	"github.com/speps/go-hashids/v2"
 	"math/rand"
+
+	"github.com/speps/go-hashids/v2"
 )
 
 func GenerateUniqueID() string {

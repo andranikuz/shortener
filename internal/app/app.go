@@ -1,11 +1,13 @@
 package app
 
 import (
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+
 	"github.com/andranikuz/shortener/internal/config"
 	"github.com/andranikuz/shortener/internal/handlers"
 	"github.com/andranikuz/shortener/internal/storage"
-	"github.com/go-chi/chi/v5"
-	"net/http"
 )
 
 type Application struct {
@@ -13,7 +15,7 @@ type Application struct {
 
 func (app *Application) Run() {
 	app.Init()
-	http.ListenAndServe(config.Config.RunAddr, app.Router())
+	http.ListenAndServe(config.Config.ServerAddress, app.Router())
 }
 
 func (app *Application) Init() {

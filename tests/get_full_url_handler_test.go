@@ -1,13 +1,15 @@
 package tests
 
 import (
-	"github.com/andranikuz/shortener/internal/app"
-	"github.com/andranikuz/shortener/internal/storage"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/andranikuz/shortener/internal/app"
+	"github.com/andranikuz/shortener/internal/storage"
 )
 
 func noRedirect(req *http.Request, via []*http.Request) error {

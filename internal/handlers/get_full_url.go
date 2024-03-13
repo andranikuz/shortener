@@ -1,9 +1,11 @@
 package handlers
 
 import (
-	"github.com/andranikuz/shortener/internal/app/usecases"
-	"github.com/go-chi/chi/v5"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+
+	"github.com/andranikuz/shortener/internal/app/usecases"
 )
 
 func GetFullURLHandler(res http.ResponseWriter, req *http.Request) {

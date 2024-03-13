@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"github.com/andranikuz/shortener/internal/app/usecases"
 	"io"
 	"net/http"
+
+	"github.com/andranikuz/shortener/internal/app/usecases"
 )
 
 func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request) {

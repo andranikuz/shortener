@@ -13,5 +13,5 @@ func GenerateShortURL(fullURL string) string {
 		return ""
 	}
 
-	return config.Config.DefaultHost + "/" + id
+	return config.Config.BaseURL + "/" + id
 }
