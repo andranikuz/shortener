@@ -6,5 +6,7 @@ import (
 
 func main() {
 	a := app.Application{}
-	a.Run()
+	if err := a.Run(); err != nil {
+		panic(err)
+	}
 }

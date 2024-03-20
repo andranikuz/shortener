@@ -17,9 +17,10 @@ func noRedirect(req *http.Request, via []*http.Request) error {
 }
 
 func TestGetFullURLHandler(t *testing.T) {
-	app := app.Application{}
-	storage.Init()
-	ts := httptest.NewServer(app.Router())
+	a := app.Application{}
+	err := a.Init()
+	require.NoError(t, err)
+	ts := httptest.NewServer(a.Router())
 	defer ts.Close()
 	type want struct {
 		code     int
