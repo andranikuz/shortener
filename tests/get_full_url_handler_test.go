@@ -18,7 +18,7 @@ func noRedirect(req *http.Request, via []*http.Request) error {
 
 func TestGetFullURLHandler(t *testing.T) {
 	a := app.Application{}
-	err := a.Init()
+	err := storage.Init()
 	require.NoError(t, err)
 	ts := httptest.NewServer(a.Router())
 	defer ts.Close()
