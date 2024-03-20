@@ -8,6 +8,7 @@ import (
 type AppConfig struct {
 	ServerAddress string
 	BaseURL       string
+	LogLevel      string
 }
 
 var Config AppConfig
@@ -22,5 +23,8 @@ func Init() {
 	}
 	if envBaseURL := os.Getenv("BASE_URL"); envBaseURL != "" {
 		Config.BaseURL = envBaseURL
+	}
+	if envLogLevel := os.Getenv("LOG_LEVEL"); envLogLevel != "" {
+		Config.LogLevel = envLogLevel
 	}
 }
