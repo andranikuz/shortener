@@ -1,13 +1,13 @@
 package app
 
 import (
+	"github.com/andranikuz/shortener/internal/api/handlers"
+	"github.com/andranikuz/shortener/internal/api/middlewares"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 
 	"github.com/andranikuz/shortener/internal/config"
-	"github.com/andranikuz/shortener/internal/handlers"
-	"github.com/andranikuz/shortener/internal/logger"
 	"github.com/andranikuz/shortener/internal/storage"
 )
 
@@ -31,16 +31,14 @@ func (app *Application) Init() error {
 		return err
 	}
 	config.Init()
-	if err := logger.Init(); err != nil {
-		return err
-	}
 
 	return nil
 }
 
 func (app *Application) Router() chi.Router {
 	r := chi.NewRouter()
-	r.Use(logger.RequestLogger)
+	r.Use(middlewares.RequestLogger)
+	r.Use(middlewares.RequestCompressor)
 	r.Post("/", handlers.GenerateShortURLHandler)
 	r.Get("/{id}", handlers.GetFullURLHandler)
 	r.Post("/api/shorten", handlers.GetShortenByFullURLJSONHandler)

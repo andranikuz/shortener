@@ -1,4 +1,4 @@
-package logger
+package middlewares
 
 import (
 	"fmt"
@@ -6,10 +6,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-
-	"github.com/andranikuz/shortener/internal/config"
 )
 
 func RequestLogger(next http.Handler) http.Handler {
@@ -29,19 +26,4 @@ func RequestLogger(next http.Handler) http.Handler {
 	}
 
 	return http.HandlerFunc(fn)
-}
-
-func Init() error {
-	if config.Config.LogLevel != "" {
-		level, err := zerolog.ParseLevel(config.Config.LogLevel)
-		if err != nil {
-			return fmt.Errorf("wrong LOG_LEVEL param in ENV: %s", config.Config.LogLevel)
-		}
-
-		zerolog.SetGlobalLevel(level)
-	} else {
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	}
-
-	return nil
 }
