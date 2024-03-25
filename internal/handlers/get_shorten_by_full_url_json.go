@@ -16,6 +16,7 @@ type GetShortenHandlerResponse struct {
 }
 
 func GetShortenByFullURLJSONHandler(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
 	if err := req.ParseForm(); err != nil {
 		res.WriteHeader(http.StatusBadRequest)
 		return
@@ -28,7 +29,7 @@ func GetShortenByFullURLJSONHandler(res http.ResponseWriter, req *http.Request) 
 	}
 	url, err := usecases.GetURLByFullURL(request.URL)
 	if err != nil {
-		res.WriteHeader(http.StatusNotFound)
+		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	resp, err := json.Marshal(GetShortenHandlerResponse{Result: url.GetShorter()})
@@ -36,7 +37,6 @@ func GetShortenByFullURLJSONHandler(res http.ResponseWriter, req *http.Request) 
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusCreated)
 	if _, err := res.Write(resp); err != nil {
 		res.WriteHeader(http.StatusBadRequest)

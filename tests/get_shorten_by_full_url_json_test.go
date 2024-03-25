@@ -51,22 +51,6 @@ func TestGetShortenByFullUrlJSONHandler(t *testing.T) {
 			},
 		},
 		{
-			name: "wrong request",
-			args: args{
-				body: "{\"url\": \"http://google.com\"}",
-				urls: map[string]models.URL{
-					"id": {
-						ID:      "id",
-						FullURL: "http://google.com",
-					},
-				},
-				request: "/api/wrong",
-			},
-			want: want{
-				code: 404,
-			},
-		},
-		{
 			name: "wrong json",
 			args: args{
 				body: "\"url\": \"http://google.com\"}",
@@ -76,10 +60,10 @@ func TestGetShortenByFullUrlJSONHandler(t *testing.T) {
 						FullURL: "http://google.com",
 					},
 				},
-				request: "/api/wrong",
+				request: "/api/shorten",
 			},
 			want: want{
-				code: 404,
+				code: 400,
 			},
 		},
 		{
@@ -88,10 +72,10 @@ func TestGetShortenByFullUrlJSONHandler(t *testing.T) {
 			args: args{
 				body:    "{\"url\": \"http://yandex.com\"}",
 				urls:    map[string]models.URL{},
-				request: "/api/wrong",
+				request: "/api/shorten",
 			},
 			want: want{
-				code: 404,
+				code: 400,
 				host: "",
 			},
 		},
@@ -104,6 +88,7 @@ func TestGetShortenByFullUrlJSONHandler(t *testing.T) {
 			reader := strings.NewReader(tt.args.body)
 			req, _ := http.NewRequest(http.MethodPost, ts.URL+tt.args.request, reader)
 			res, err := ts.Client().Do(req)
+
 			require.NoError(t, err)
 			defer res.Body.Close()
 			assert.Equal(t, tt.want.code, res.StatusCode)
