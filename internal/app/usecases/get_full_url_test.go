@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"github.com/andranikuz/shortener/internal/models"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,7 +11,7 @@ import (
 
 func TestGetFullURL(t *testing.T) {
 	type args struct {
-		urls map[string]storage.URL
+		urls map[string]models.URL
 		id   string
 	}
 	tests := []struct {
@@ -21,7 +22,7 @@ func TestGetFullURL(t *testing.T) {
 		{
 			name: "positive test",
 			args: args{
-				urls: map[string]storage.URL{
+				urls: map[string]models.URL{
 					"id1": {
 						ID:      "id1",
 						FullURL: "http://google.com",
@@ -34,7 +35,7 @@ func TestGetFullURL(t *testing.T) {
 		{
 			name: "negative test",
 			args: args{
-				urls: map[string]storage.URL{},
+				urls: map[string]models.URL{},
 				id:   "id2",
 			},
 			want: "",

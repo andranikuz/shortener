@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"github.com/andranikuz/shortener/internal/models"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -28,7 +29,7 @@ func TestGetFullURLHandler(t *testing.T) {
 	}
 	type args struct {
 		request string
-		urls    map[string]storage.URL
+		urls    map[string]models.URL
 	}
 	tests := []struct {
 		name string
@@ -39,7 +40,7 @@ func TestGetFullURLHandler(t *testing.T) {
 			name: "Positive tests",
 			args: args{
 				request: "/id",
-				urls: map[string]storage.URL{
+				urls: map[string]models.URL{
 					"id": {
 						ID:      "id",
 						FullURL: "http://test.com",
@@ -55,7 +56,7 @@ func TestGetFullURLHandler(t *testing.T) {
 			name: "id not found",
 			args: args{
 				request: "/id2",
-				urls:    map[string]storage.URL{},
+				urls:    map[string]models.URL{},
 			},
 			want: want{
 				code:     400,
@@ -66,7 +67,7 @@ func TestGetFullURLHandler(t *testing.T) {
 			name: "id not presented",
 			args: args{
 				request: "/",
-				urls:    map[string]storage.URL{},
+				urls:    map[string]models.URL{},
 			},
 			want: want{
 				code:     400,

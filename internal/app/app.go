@@ -18,6 +18,7 @@ func (app *Application) Run() error {
 	if err := app.Init(); err != nil {
 		return err
 	}
+
 	if err := http.ListenAndServe(config.Config.ServerAddress, app.Router()); err != nil {
 		return err
 	}
@@ -42,6 +43,7 @@ func (app *Application) Router() chi.Router {
 	r.Use(logger.RequestLogger)
 	r.Post("/", handlers.GenerateShortURLHandler)
 	r.Get("/{id}", handlers.GetFullURLHandler)
+	r.Post("/api/shorten", handlers.GetShortenByFullURLJSONHandler)
 	r.Post("/{url}", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	})

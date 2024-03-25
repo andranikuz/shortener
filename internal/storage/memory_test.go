@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"github.com/andranikuz/shortener/internal/models"
 	"reflect"
 	"testing"
 
@@ -9,7 +10,7 @@ import (
 
 func TestSave(t *testing.T) {
 	Init()
-	url := URL{
+	url := models.URL{
 		ID:      "id",
 		FullURL: "url",
 	}
@@ -22,26 +23,26 @@ func TestSave(t *testing.T) {
 func TestGet(t *testing.T) {
 	type args struct {
 		id   string
-		urls map[string]URL
+		urls map[string]models.URL
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *URL
+		want    *models.URL
 		wantErr bool
 	}{
 		{
 			name: "positive test",
 			args: args{
 				id: "id1",
-				urls: map[string]URL{
+				urls: map[string]models.URL{
 					"id1": {
 						ID:      "id1",
 						FullURL: "http://google.com",
 					},
 				},
 			},
-			want: &URL{
+			want: &models.URL{
 				ID:      "id1",
 				FullURL: "http://google.com",
 			},
@@ -51,7 +52,7 @@ func TestGet(t *testing.T) {
 			name: "wrong id",
 			args: args{
 				id: "wrong_id",
-				urls: map[string]URL{
+				urls: map[string]models.URL{
 					"id1": {
 						ID:      "id1",
 						FullURL: "http://google.com",
