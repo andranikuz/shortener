@@ -8,14 +8,14 @@ import (
 )
 
 type GetShortenHandlerRequest struct {
-	Url string `json:"url"`
+	URL string `json:"url"`
 }
 
 type GetShortenHandlerResponse struct {
 	Result string `json:"result"`
 }
 
-func GetShortenByFullUrlJSONHandler(res http.ResponseWriter, req *http.Request) {
+func GetShortenByFullURLJSONHandler(res http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
 		res.WriteHeader(http.StatusBadRequest)
 		return
@@ -26,7 +26,7 @@ func GetShortenByFullUrlJSONHandler(res http.ResponseWriter, req *http.Request) 
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
-	url, err := usecases.GetURLByFullURL(request.Url)
+	url, err := usecases.GetURLByFullURL(request.URL)
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
 		return

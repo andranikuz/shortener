@@ -43,7 +43,7 @@ func (app *Application) Router() chi.Router {
 	r.Use(logger.RequestLogger)
 	r.Post("/", handlers.GenerateShortURLHandler)
 	r.Get("/{id}", handlers.GetFullURLHandler)
-	r.Post("/api/shorten", handlers.GetShortenByFullUrlJSONHandler)
+	r.Post("/api/shorten", handlers.GetShortenByFullURLJSONHandler)
 	r.Post("/{url}", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	})

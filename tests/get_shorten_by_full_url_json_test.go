@@ -104,9 +104,8 @@ func TestGetShortenByFullUrlJSONHandler(t *testing.T) {
 			reader := strings.NewReader(tt.args.body)
 			req, _ := http.NewRequest(http.MethodPost, ts.URL+tt.args.request, reader)
 			res, err := ts.Client().Do(req)
-			defer res.Body.Close()
-
 			require.NoError(t, err)
+			defer res.Body.Close()
 			assert.Equal(t, tt.want.code, res.StatusCode)
 			resBody, err := io.ReadAll(res.Body)
 			require.NoError(t, err)
