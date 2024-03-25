@@ -69,19 +69,3 @@ func Get(id string) (*models.URL, error) {
 
 	return &url, nil
 }
-
-func GetByFullURL(fullURL string) (*models.URL, error) {
-	txn := db.Txn(false)
-	defer txn.Abort()
-	raw, err := txn.First("url", "url", fullURL)
-	if err != nil {
-		return nil, fmt.Errorf("getting index fullURL=%s error=%s", fullURL, err)
-	}
-
-	url, ok := raw.(models.URL)
-	if !ok {
-		return nil, fmt.Errorf("index fullURL=%s not found error=%s", fullURL, err)
-	}
-
-	return &url, nil
-}

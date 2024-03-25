@@ -27,12 +27,12 @@ func GetShortenByFullURLJSONHandler(res http.ResponseWriter, req *http.Request) 
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
-	url, err := usecases.GetURLByFullURL(request.URL)
-	if err != nil {
+	shortURL := usecases.GenerateShortURL(request.URL)
+	if shortURL == "" {
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	resp, err := json.Marshal(GetShortenHandlerResponse{Result: url.GetShorter()})
+	resp, err := json.Marshal(GetShortenHandlerResponse{Result: shortURL})
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
 		return
