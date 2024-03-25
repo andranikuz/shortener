@@ -2,14 +2,10 @@ package storage
 
 import (
 	"fmt"
+	"github.com/andranikuz/shortener/internal/models"
 
 	"github.com/hashicorp/go-memdb"
 )
-
-type URL struct {
-	ID      string
-	FullURL string
-}
 
 var db *memdb.MemDB
 
@@ -25,6 +21,11 @@ func Init() error {
 						Unique:  true,
 						Indexer: &memdb.StringFieldIndex{Field: "ID"},
 					},
+					"url": &memdb.IndexSchema{
+						Name:    "url",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "FullURL"},
+					},
 				},
 			},
 		},
@@ -33,14 +34,14 @@ func Init() error {
 	// Create database
 	db, err = memdb.NewMemDB(schema)
 	if err != nil {
-		return fmt.Errorf("init DB error")
+		return fmt.Errorf("init DB error %s", err.Error())
 	}
 
 	return nil
 }
 
 // Save url
-func Save(url URL) error {
+func Save(url models.URL) error {
 	txn := db.Txn(true)
 	defer txn.Abort()
 
@@ -53,17 +54,33 @@ func Save(url URL) error {
 }
 
 // Get url
-func Get(id string) (*URL, error) {
+func Get(id string) (*models.URL, error) {
 	txn := db.Txn(false)
 	defer txn.Abort()
 	raw, err := txn.First("url", "id", id)
 	if err != nil {
-		return nil, fmt.Errorf("getting index %s error", id)
+		return nil, fmt.Errorf("getting index id=%s error", id)
 	}
 
-	url, ok := raw.(URL)
+	url, ok := raw.(models.URL)
 	if !ok {
 		return nil, fmt.Errorf("index %s not found", id)
+	}
+
+	return &url, nil
+}
+
+func GetByFullURL(fullURL string) (*models.URL, error) {
+	txn := db.Txn(false)
+	defer txn.Abort()
+	raw, err := txn.First("url", "url", fullURL)
+	if err != nil {
+		return nil, fmt.Errorf("getting index fullURL=%s error=%s", fullURL, err)
+	}
+
+	url, ok := raw.(models.URL)
+	if !ok {
+		return nil, fmt.Errorf("index fullURL=%s not found error=%s", fullURL, err)
 	}
 
 	return &url, nil

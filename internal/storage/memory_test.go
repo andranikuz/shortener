@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"github.com/andranikuz/shortener/internal/models"
 	"reflect"
 	"testing"
 
@@ -9,7 +10,7 @@ import (
 
 func TestSave(t *testing.T) {
 	Init()
-	url := URL{
+	url := models.URL{
 		ID:      "id",
 		FullURL: "url",
 	}
@@ -22,26 +23,26 @@ func TestSave(t *testing.T) {
 func TestGet(t *testing.T) {
 	type args struct {
 		id   string
-		urls map[string]URL
+		urls map[string]models.URL
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *URL
+		want    *models.URL
 		wantErr bool
 	}{
 		{
 			name: "positive test",
 			args: args{
 				id: "id1",
-				urls: map[string]URL{
+				urls: map[string]models.URL{
 					"id1": {
 						ID:      "id1",
 						FullURL: "http://google.com",
 					},
 				},
 			},
-			want: &URL{
+			want: &models.URL{
 				ID:      "id1",
 				FullURL: "http://google.com",
 			},
@@ -51,7 +52,7 @@ func TestGet(t *testing.T) {
 			name: "wrong id",
 			args: args{
 				id: "wrong_id",
-				urls: map[string]URL{
+				urls: map[string]models.URL{
 					"id1": {
 						ID:      "id1",
 						FullURL: "http://google.com",
@@ -68,6 +69,61 @@ func TestGet(t *testing.T) {
 				Save(url)
 			}
 			got, err := Get(tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Get() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetByFullURL(t *testing.T) {
+	type args struct {
+		fullURL string
+		urls    map[string]models.URL
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *models.URL
+		wantErr bool
+	}{
+		{
+			name: "positive test",
+			args: args{
+				fullURL: "http://google.com",
+				urls: map[string]models.URL{
+					"id1": {
+						ID:      "id1",
+						FullURL: "http://google.com",
+					},
+				},
+			},
+			want: &models.URL{
+				ID:      "id1",
+				FullURL: "http://google.com",
+			},
+			wantErr: false,
+		},
+		{
+			name: "wrong id",
+			args: args{
+				fullURL: "http://yandex.com",
+				urls:    map[string]models.URL{},
+			},
+			want:    nil,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for _, url := range tt.args.urls {
+				Save(url)
+			}
+			got, err := GetByFullURL(tt.args.fullURL)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
 				return
