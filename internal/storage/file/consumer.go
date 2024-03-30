@@ -2,7 +2,6 @@ package file
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strings"
 )
@@ -39,8 +38,6 @@ func (c *consumer) findJSONByParam(param string, value string) ([]byte, error) {
 			return data, nil
 		}
 	}
-
-	return nil, fmt.Errorf("%s not found", value)
 }
 
 func (c *consumer) close() error {
