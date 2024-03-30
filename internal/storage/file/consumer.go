@@ -27,7 +27,7 @@ func newConsumer(filename string) (*consumer, error) {
 
 // поиск JSON строки в файле по маске "{param}":"{value}"
 func (c *consumer) findJSONByParam(param string, value string) ([]byte, error) {
-	for true {
+	for {
 		// одиночное сканирование до следующей строки
 		if !c.scanner.Scan() {
 			return nil, c.scanner.Err()
