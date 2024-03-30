@@ -8,10 +8,6 @@ import (
 )
 
 func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request) {
-	if req.RequestURI != "/" {
-		res.WriteHeader(http.StatusBadRequest)
-		return
-	}
 	if err := req.ParseForm(); err != nil {
 		res.WriteHeader(http.StatusBadRequest)
 		return

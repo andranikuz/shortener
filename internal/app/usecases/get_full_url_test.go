@@ -1,11 +1,11 @@
 package usecases
 
 import (
-	"github.com/andranikuz/shortener/internal/models"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/andranikuz/shortener/internal/models"
 	"github.com/andranikuz/shortener/internal/storage"
 )
 

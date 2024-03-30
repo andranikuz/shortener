@@ -1,11 +1,12 @@
 package storage
 
 import (
-	"github.com/andranikuz/shortener/internal/models"
 	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/andranikuz/shortener/internal/models"
 )
 
 func TestSave(t *testing.T) {

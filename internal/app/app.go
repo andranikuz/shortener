@@ -1,12 +1,12 @@
 package app
 
 import (
-	"github.com/andranikuz/shortener/internal/api/handlers"
-	"github.com/andranikuz/shortener/internal/api/middlewares"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 
+	"github.com/andranikuz/shortener/internal/api/handlers"
+	"github.com/andranikuz/shortener/internal/api/middlewares"
 	"github.com/andranikuz/shortener/internal/config"
 	"github.com/andranikuz/shortener/internal/storage"
 )
@@ -27,10 +27,10 @@ func (app *Application) Run() error {
 }
 
 func (app *Application) Init() error {
+	config.Init()
 	if err := storage.Init(); err != nil {
 		return err
 	}
-	config.Init()
 
 	return nil
 }
@@ -41,7 +41,7 @@ func (app *Application) Router() chi.Router {
 	r.Use(middlewares.RequestCompressor)
 	r.Post("/", handlers.GenerateShortURLHandler)
 	r.Get("/{id}", handlers.GetFullURLHandler)
-	r.Post("/api/shorten", handlers.GetShortenByFullURLJSONHandler)
+	r.Post("/api/shorten", handlers.GenerateShortURLJSONHandler)
 	r.Post("/{url}", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	})

@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"github.com/andranikuz/shortener/internal/models"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -10,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/andranikuz/shortener/internal/app"
+	"github.com/andranikuz/shortener/internal/models"
 	"github.com/andranikuz/shortener/internal/storage"
 )
 
