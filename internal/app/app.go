@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/andranikuz/shortener/internal/config"
@@ -10,15 +11,14 @@ import (
 )
 
 type Application struct {
-	DB DBInterface
+	isInit bool
+	DB     DBInterface
 }
 
 type DBInterface interface {
 	Get(id string) (*models.URL, error)
 	Save(url models.URL) error
 }
-
-var App *Application
 
 func (app *Application) Init() error {
 	config.Init()
@@ -37,16 +37,15 @@ func (app *Application) Init() error {
 			}
 		}
 	}
+	app.isInit = true
 
 	return nil
 }
 
 func (app *Application) Run(handler http.Handler) error {
-	err := app.Init()
-	if err != nil {
-		return err
+	if !app.isInit {
+		return fmt.Errorf("running not inited application")
 	}
-	App = app
 
 	if err := http.ListenAndServe(config.Config.ServerAddress, handler); err != nil {
 		return err

@@ -21,8 +21,7 @@ func TestGetFullURLHandler(t *testing.T) {
 	a := app.Application{}
 	err := a.Init()
 	require.NoError(t, err)
-	app.App = &a
-	ts := httptest.NewServer(api.Router())
+	ts := httptest.NewServer(api.Router(a))
 	defer ts.Close()
 	type want struct {
 		code     int
@@ -79,7 +78,7 @@ func TestGetFullURLHandler(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			for _, url := range test.args.urls {
-				app.App.DB.Save(url)
+				a.DB.Save(url)
 			}
 			req, _ := http.NewRequest(http.MethodGet, ts.URL+test.args.request, nil)
 			client := &http.Client{

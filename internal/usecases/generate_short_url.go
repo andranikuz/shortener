@@ -1,15 +1,18 @@
 package usecases
 
 import (
+	"github.com/rs/zerolog/log"
+
 	"github.com/andranikuz/shortener/internal/app"
 	"github.com/andranikuz/shortener/internal/models"
 	"github.com/andranikuz/shortener/internal/utils/generator"
 )
 
-func GenerateShortURL(fullURL string) string {
+func GenerateShortURL(a app.Application, fullURL string) string {
 	id := generator.GenerateUniqueID()
 	url := models.URL{ID: id, FullURL: fullURL}
-	if err := app.App.DB.Save(url); err != nil {
+	if err := a.DB.Save(url); err != nil {
+		log.Error().Msg(err.Error())
 		return ""
 	}
 

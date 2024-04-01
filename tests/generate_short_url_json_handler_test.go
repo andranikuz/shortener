@@ -19,8 +19,7 @@ func TestGetShortenByFullUrlJSONHandler(t *testing.T) {
 	a := app.Application{}
 	err := a.Init()
 	require.NoError(t, err)
-	app.App = &a
-	ts := httptest.NewServer(api.Router())
+	ts := httptest.NewServer(api.Router(a))
 	type args struct {
 		body    string
 		request string

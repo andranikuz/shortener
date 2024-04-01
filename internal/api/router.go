@@ -7,15 +7,22 @@ import (
 
 	"github.com/andranikuz/shortener/internal/api/handlers"
 	"github.com/andranikuz/shortener/internal/api/middlewares"
+	"github.com/andranikuz/shortener/internal/app"
 )
 
-func Router() chi.Router {
+func Router(a app.Application) chi.Router {
 	r := chi.NewRouter()
 	r.Use(middlewares.RequestLogger)
 	r.Use(middlewares.RequestCompressor)
-	r.Post("/", handlers.GenerateShortURLHandler)
-	r.Get("/{id}", handlers.GetFullURLHandler)
-	r.Post("/api/shorten", handlers.GenerateShortURLJSONHandler)
+	r.Post("/", func(w http.ResponseWriter, r *http.Request) {
+		handlers.GenerateShortURLHandler(w, r, a)
+	})
+	r.Get("/{id}", func(w http.ResponseWriter, r *http.Request) {
+		handlers.GetFullURLHandler(w, r, a)
+	})
+	r.Post("/api/shorten", func(w http.ResponseWriter, r *http.Request) {
+		handlers.GenerateShortURLJSONHandler(w, r, a)
+	})
 	r.Post("/{url}", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	})

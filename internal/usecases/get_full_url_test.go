@@ -14,7 +14,6 @@ func TestGetFullURL(t *testing.T) {
 	a := app.Application{}
 	err := a.Init()
 	require.NoError(t, err)
-	app.App = &a
 	type args struct {
 		urls map[string]models.URL
 		id   string
@@ -49,9 +48,9 @@ func TestGetFullURL(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			for _, url := range test.args.urls {
-				app.App.DB.Save(url)
+				a.DB.Save(url)
 			}
-			assert.Equal(t, test.want, GetFullURL(test.args.id), "GetFullURL(%v)", test.args.id)
+			assert.Equal(t, test.want, GetFullURL(a, test.args.id), "GetFullURL(%v)", test.args.id)
 		})
 	}
 }
