@@ -15,7 +15,7 @@ type AppConfig struct {
 var Config AppConfig
 
 func Init() {
-	if Config.isInit == false {
+	if !Config.isInit {
 		flag.StringVar(&Config.ServerAddress, "a", "localhost:8080", "address and port to run server")
 		flag.StringVar(&Config.BaseURL, "b", "http://localhost:8080", "default url host")
 		flag.StringVar(&Config.FileStoragePath, "f", "/tmp/short-url-db.json", "file storage path")
