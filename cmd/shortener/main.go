@@ -8,13 +8,12 @@ import (
 )
 
 func main() {
-	a := app.Application{}
-	err := a.Init()
+	a, err := app.NewApplication()
 	if err != nil {
 		log.Error().Msg(err.Error())
 		panic(err)
 	}
-	if err := a.Run(api.Router(a)); err != nil {
+	if err := a.Run(api.Router(*a)); err != nil {
 		log.Error().Msg(err.Error())
 		panic(err)
 	}

@@ -16,10 +16,9 @@ import (
 )
 
 func TestGenerateShortUrlHandler(t *testing.T) {
-	a := app.Application{}
-	err := a.Init()
+	a, err := app.NewApplication()
 	require.NoError(t, err)
-	ts := httptest.NewServer(api.Router(a))
+	ts := httptest.NewServer(api.Router(*a))
 	type want struct {
 		code     int
 		response string
