@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"github.com/andranikuz/shortener/internal/models"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -9,8 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/andranikuz/shortener/internal/api"
 	"github.com/andranikuz/shortener/internal/app"
-	"github.com/andranikuz/shortener/internal/storage"
+	"github.com/andranikuz/shortener/internal/models"
 )
 
 func noRedirect(req *http.Request, via []*http.Request) error {
@@ -18,10 +18,9 @@ func noRedirect(req *http.Request, via []*http.Request) error {
 }
 
 func TestGetFullURLHandler(t *testing.T) {
-	a := app.Application{}
-	err := storage.Init()
+	a, err := app.NewApplication()
 	require.NoError(t, err)
-	ts := httptest.NewServer(a.Router())
+	ts := httptest.NewServer(api.Router(*a))
 	defer ts.Close()
 	type want struct {
 		code     int
@@ -78,7 +77,7 @@ func TestGetFullURLHandler(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			for _, url := range test.args.urls {
-				storage.Save(url)
+				a.DB.Save(url)
 			}
 			req, _ := http.NewRequest(http.MethodGet, ts.URL+test.args.request, nil)
 			client := &http.Client{

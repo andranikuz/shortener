@@ -1,16 +1,18 @@
-package storage
+package memory
 
 import (
 	"fmt"
-	"github.com/andranikuz/shortener/internal/models"
 
 	"github.com/hashicorp/go-memdb"
+
+	"github.com/andranikuz/shortener/internal/models"
 )
 
-var db *memdb.MemDB
+type MemoryDB struct {
+	memory *memdb.MemDB
+}
 
-// Init memory DB
-func Init() error {
+func NewMemoryDB() (*MemoryDB, error) {
 	schema := &memdb.DBSchema{
 		Tables: map[string]*memdb.TableSchema{
 			"url": &memdb.TableSchema{
@@ -30,19 +32,20 @@ func Init() error {
 			},
 		},
 	}
-	var err error
 	// Create database
-	db, err = memdb.NewMemDB(schema)
+	memory, err := memdb.NewMemDB(schema)
 	if err != nil {
-		return fmt.Errorf("init DB error %s", err.Error())
+		return nil, fmt.Errorf("init DB error %s", err.Error())
 	}
 
-	return nil
+	db := MemoryDB{memory}
+
+	return &db, nil
 }
 
 // Save url
-func Save(url models.URL) error {
-	txn := db.Txn(true)
+func (db *MemoryDB) Save(url models.URL) error {
+	txn := db.memory.Txn(true)
 	defer txn.Abort()
 
 	if err := txn.Insert("url", url); err != nil {
@@ -54,8 +57,8 @@ func Save(url models.URL) error {
 }
 
 // Get url
-func Get(id string) (*models.URL, error) {
-	txn := db.Txn(false)
+func (db *MemoryDB) Get(id string) (*models.URL, error) {
+	txn := db.memory.Txn(false)
 	defer txn.Abort()
 	raw, err := txn.First("url", "id", id)
 	if err != nil {
