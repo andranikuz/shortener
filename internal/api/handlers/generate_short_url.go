@@ -4,7 +4,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/andranikuz/shortener/internal/app/usecases"
+	"github.com/andranikuz/shortener/internal/usecases"
 )
 
 func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request) {

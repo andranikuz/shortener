@@ -4,12 +4,17 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
+	"github.com/andranikuz/shortener/internal/app"
 	"github.com/andranikuz/shortener/internal/models"
-	"github.com/andranikuz/shortener/internal/storage"
 )
 
 func TestGetFullURL(t *testing.T) {
+	a := app.Application{}
+	err := a.Init()
+	require.NoError(t, err)
+	app.App = &a
 	type args struct {
 		urls map[string]models.URL
 		id   string
@@ -44,7 +49,7 @@ func TestGetFullURL(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			for _, url := range test.args.urls {
-				storage.Save(url)
+				app.App.DB.Save(url)
 			}
 			assert.Equal(t, test.want, GetFullURL(test.args.id), "GetFullURL(%v)", test.args.id)
 		})

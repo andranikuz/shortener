@@ -1,11 +1,11 @@
 package usecases
 
 import (
-	"github.com/andranikuz/shortener/internal/storage"
+	"github.com/andranikuz/shortener/internal/app"
 )
 
 func GetFullURL(id string) string {
-	url, err := storage.Get(id)
+	url, err := app.App.DB.Get(id)
 	if err != nil {
 		return ""
 	}
