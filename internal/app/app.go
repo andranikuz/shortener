@@ -20,32 +20,22 @@ type DBInterface interface {
 
 func NewApplication() (*Application, error) {
 	a := Application{}
-	if err := a.init(); err != nil {
-		return nil, err
-	}
-
-	return &a, nil
-}
-
-func (app *Application) init() error {
 	config.Init()
 	filePath := config.Config.FileStoragePath
 	var err error
-	if app.DB == nil {
-		if filePath != "" {
-			app.DB, err = file.NewFileDB(filePath)
-			if err != nil {
-				return err
-			}
-		} else {
-			app.DB, err = memory.NewMemoryDB()
-			if err != nil {
-				return err
-			}
+	if filePath != "" {
+		a.DB, err = file.NewFileDB(filePath)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		a.DB, err = memory.NewMemoryDB()
+		if err != nil {
+			return nil, err
 		}
 	}
 
-	return nil
+	return &a, nil
 }
 
 func (app *Application) Run(handler http.Handler) error {
