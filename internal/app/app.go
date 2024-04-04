@@ -3,36 +3,45 @@ package app
 import (
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
-
 	"github.com/andranikuz/shortener/internal/config"
-	"github.com/andranikuz/shortener/internal/handlers"
-	"github.com/andranikuz/shortener/internal/storage"
+	"github.com/andranikuz/shortener/internal/models"
+	"github.com/andranikuz/shortener/internal/storage/file"
+	"github.com/andranikuz/shortener/internal/storage/memory"
 )
 
 type Application struct {
+	DB DBInterface
 }
 
-func (app *Application) Run() {
-	app.Init()
-	http.ListenAndServe(config.Config.ServerAddress, app.Router())
+type DBInterface interface {
+	Get(id string) (*models.URL, error)
+	Save(url models.URL) error
 }
 
-func (app *Application) Init() {
-	storage.Init()
+func NewApplication() (*Application, error) {
+	a := Application{}
 	config.Init()
+	filePath := config.Config.FileStoragePath
+	var err error
+	if filePath != "" {
+		a.DB, err = file.NewFileDB(filePath)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		a.DB, err = memory.NewMemoryDB()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &a, nil
 }
 
-func (app *Application) Router() chi.Router {
-	r := chi.NewRouter()
-	r.Post("/", handlers.GenerateShortURLHandler)
-	r.Get("/{id}", handlers.GetFullURLHandler)
-	r.Post("/{url}", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusBadRequest)
-	})
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusBadRequest)
-	})
+func (app *Application) Run(handler http.Handler) error {
+	if err := http.ListenAndServe(config.Config.ServerAddress, handler); err != nil {
+		return err
+	}
 
-	return r
+	return nil
 }

@@ -8,8 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/andranikuz/shortener/internal/api"
 	"github.com/andranikuz/shortener/internal/app"
-	"github.com/andranikuz/shortener/internal/storage"
+	"github.com/andranikuz/shortener/internal/models"
 )
 
 func noRedirect(req *http.Request, via []*http.Request) error {
@@ -17,9 +18,9 @@ func noRedirect(req *http.Request, via []*http.Request) error {
 }
 
 func TestGetFullURLHandler(t *testing.T) {
-	app := app.Application{}
-	storage.Init()
-	ts := httptest.NewServer(app.Router())
+	a, err := app.NewApplication()
+	require.NoError(t, err)
+	ts := httptest.NewServer(api.Router(*a))
 	defer ts.Close()
 	type want struct {
 		code     int
@@ -27,7 +28,7 @@ func TestGetFullURLHandler(t *testing.T) {
 	}
 	type args struct {
 		request string
-		urls    map[string]storage.URL
+		urls    map[string]models.URL
 	}
 	tests := []struct {
 		name string
@@ -38,7 +39,7 @@ func TestGetFullURLHandler(t *testing.T) {
 			name: "Positive tests",
 			args: args{
 				request: "/id",
-				urls: map[string]storage.URL{
+				urls: map[string]models.URL{
 					"id": {
 						ID:      "id",
 						FullURL: "http://test.com",
@@ -54,7 +55,7 @@ func TestGetFullURLHandler(t *testing.T) {
 			name: "id not found",
 			args: args{
 				request: "/id2",
-				urls:    map[string]storage.URL{},
+				urls:    map[string]models.URL{},
 			},
 			want: want{
 				code:     400,
@@ -65,7 +66,7 @@ func TestGetFullURLHandler(t *testing.T) {
 			name: "id not presented",
 			args: args{
 				request: "/",
-				urls:    map[string]storage.URL{},
+				urls:    map[string]models.URL{},
 			},
 			want: want{
 				code:     400,
@@ -76,7 +77,7 @@ func TestGetFullURLHandler(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			for _, url := range test.args.urls {
-				storage.Save(url)
+				a.DB.Save(url)
 			}
 			req, _ := http.NewRequest(http.MethodGet, ts.URL+test.args.request, nil)
 			client := &http.Client{

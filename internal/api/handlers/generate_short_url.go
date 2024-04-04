@@ -4,15 +4,15 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/andranikuz/shortener/internal/app/usecases"
+	"github.com/rs/zerolog/log"
+
+	"github.com/andranikuz/shortener/internal/app"
+	"github.com/andranikuz/shortener/internal/usecases"
 )
 
-func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request) {
-	if req.RequestURI != "/" {
-		res.WriteHeader(http.StatusBadRequest)
-		return
-	}
+func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request, a app.Application) {
 	if err := req.ParseForm(); err != nil {
+		log.Info().Msg(err.Error())
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -25,11 +25,12 @@ func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	shortURL := usecases.GenerateShortURL(fullURL)
+	shortURL := usecases.GenerateShortURL(a, fullURL)
 
 	res.WriteHeader(http.StatusCreated)
 	res.Header().Set("Content-Type", "text/plain")
 	if _, err := io.WriteString(res, shortURL); err != nil {
+		log.Info().Msg(err.Error())
 		res.WriteHeader(http.StatusInternalServerError)
 		return
 	}
