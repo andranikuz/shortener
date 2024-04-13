@@ -3,7 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	
+
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/rs/zerolog/log"
 
@@ -28,28 +28,13 @@ func NewPostgresDB(dsn string) (*PostgresDB, error) {
 }
 
 func (db *PostgresDB) Migrate(ctx context.Context) error {
-	var tableExist bool
-	row := db.DB.QueryRowContext(ctx, `
-		SELECT EXISTS (
-    		SELECT 1 FROM information_schema.tables 
-    		WHERE table_name = 'url'
-		) AS table_exists
-	`)
-	err := row.Scan(&tableExist)
-	if err != nil {
-		log.Error().Msg(err.Error())
+	if _, err := db.DB.ExecContext(ctx, `
+		CREATE TABLE IF NOT EXISTS public.url (
+			id varchar NOT NULL,
+			full_url varchar NOT NULL
+		)
+	`); err != nil {
 		return err
-	}
-
-	if !tableExist {
-		if _, err = db.DB.ExecContext(ctx, `
-			CREATE TABLE public.url (
-				id varchar NOT NULL,
-				full_url varchar NOT NULL
-			)
-		`); err != nil {
-			return err
-		}
 	}
 
 	return nil
