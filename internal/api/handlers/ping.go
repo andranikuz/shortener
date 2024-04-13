@@ -13,7 +13,7 @@ import (
 
 func PingHandler(res http.ResponseWriter, a app.Application) {
 	if config.Config.DatabaseDSN == "" {
-		log.Info().Msg(fmt.Sprintf("database dsn is not init"))
+		log.Info().Msg("database dsn is not init")
 		res.WriteHeader(http.StatusInternalServerError)
 		return
 	}
