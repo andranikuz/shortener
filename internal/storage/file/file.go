@@ -1,6 +1,7 @@
 package file
 
 import (
+	"context"
 	"encoding/json"
 	"os"
 
@@ -22,8 +23,12 @@ func NewFileDB(path string) (*FileDB, error) {
 	return &db, nil
 }
 
+func (db *FileDB) Migrate() error {
+	return nil
+}
+
 // Save url
-func (db *FileDB) Save(url models.URL) error {
+func (db *FileDB) Save(ctx context.Context, url models.URL) error {
 	data, err := json.Marshal(&url)
 	if err != nil {
 		return err
@@ -40,7 +45,7 @@ func (db *FileDB) Save(url models.URL) error {
 }
 
 // Get url
-func (db *FileDB) Get(id string) (*models.URL, error) {
+func (db *FileDB) Get(ctx context.Context, id string) (*models.URL, error) {
 	c, err := newConsumer(db.filePath)
 	if err != nil {
 		return nil, err

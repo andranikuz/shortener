@@ -1,30 +1,40 @@
 package app
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/andranikuz/shortener/internal/config"
 	"github.com/andranikuz/shortener/internal/models"
 	"github.com/andranikuz/shortener/internal/storage/file"
 	"github.com/andranikuz/shortener/internal/storage/memory"
+	"github.com/andranikuz/shortener/internal/storage/postgres"
 )
 
 type Application struct {
-	DB DBInterface
+	DB  DBInterface
+	CTX context.Context
 }
 
 type DBInterface interface {
-	Get(id string) (*models.URL, error)
-	Save(url models.URL) error
+	Get(ctx context.Context, id string) (*models.URL, error)
+	Save(ctx context.Context, url models.URL) error
+	Migrate() error
 }
 
 func NewApplication() (*Application, error) {
-	a := Application{}
+	a := Application{
+		CTX: context.Background(),
+	}
 	config.Init()
-	filePath := config.Config.FileStoragePath
 	var err error
-	if filePath != "" {
-		a.DB, err = file.NewFileDB(filePath)
+	if config.Config.DatabaseDSN != "" {
+		a.DB, err = postgres.NewPostgresDB(config.Config.DatabaseDSN)
+		if err != nil {
+			return nil, err
+		}
+	} else if config.Config.FileStoragePath != "" {
+		a.DB, err = file.NewFileDB(config.Config.FileStoragePath)
 		if err != nil {
 			return nil, err
 		}
@@ -33,6 +43,9 @@ func NewApplication() (*Application, error) {
 		if err != nil {
 			return nil, err
 		}
+	}
+	if err = a.DB.Migrate(); err != nil {
+		return nil, err
 	}
 
 	return &a, nil
