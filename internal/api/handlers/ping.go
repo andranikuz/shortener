@@ -6,12 +6,11 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/andranikuz/shortener/internal/app"
 	"github.com/andranikuz/shortener/internal/config"
 	"github.com/andranikuz/shortener/internal/storage/postgres"
 )
 
-func PingHandler(res http.ResponseWriter, a app.Application) {
+func PingHandler(res http.ResponseWriter) {
 	if config.Config.DatabaseDSN == "" {
 		log.Info().Msg("database dsn is not init")
 		res.WriteHeader(http.StatusInternalServerError)

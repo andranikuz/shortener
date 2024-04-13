@@ -24,7 +24,7 @@ func Router(a app.Application) chi.Router {
 		handlers.GenerateShortURLJSONHandler(w, r, a)
 	})
 	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
-		handlers.PingHandler(w, a)
+		handlers.PingHandler(w)
 	})
 	r.Post("/{url}", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
