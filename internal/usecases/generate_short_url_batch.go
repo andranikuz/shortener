@@ -20,7 +20,7 @@ func GenerateShortURLBatch(a app.Application, items []OriginalItem) ([]ShortenIt
 	var result []ShortenItem
 	var url models.URL
 	for _, item := range items {
-		url = models.URL{item.CorrelationID, item.OriginalURL}
+		url = models.URL{ID: item.CorrelationID, FullURL: item.OriginalURL}
 		urls = append(urls, url)
 		result = append(result, ShortenItem{item.CorrelationID, url.GetShorter()})
 	}
