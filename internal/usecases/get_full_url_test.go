@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -47,7 +48,7 @@ func TestGetFullURL(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			for _, url := range test.args.urls {
-				a.DB.Save(url)
+				a.DB.Save(context.Background(), url)
 			}
 			assert.Equal(t, test.want, GetFullURL(*a, test.args.id), "GetFullURL(%v)", test.args.id)
 		})

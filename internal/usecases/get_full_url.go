@@ -7,7 +7,7 @@ import (
 )
 
 func GetFullURL(a app.Application, id string) string {
-	url, err := a.DB.Get(id)
+	url, err := a.DB.Get(a.CTX, id)
 	if err != nil {
 		log.Info().Msg(err.Error())
 		return ""

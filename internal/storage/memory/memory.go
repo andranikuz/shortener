@@ -1,8 +1,8 @@
 package memory
 
 import (
+	"context"
 	"fmt"
-
 	"github.com/hashicorp/go-memdb"
 
 	"github.com/andranikuz/shortener/internal/models"
@@ -43,8 +43,12 @@ func NewMemoryDB() (*MemoryDB, error) {
 	return &db, nil
 }
 
+func (db *MemoryDB) Migrate() error {
+	return nil
+}
+
 // Save url
-func (db *MemoryDB) Save(url models.URL) error {
+func (db *MemoryDB) Save(ctx context.Context, url models.URL) error {
 	txn := db.memory.Txn(true)
 	defer txn.Abort()
 
@@ -57,7 +61,7 @@ func (db *MemoryDB) Save(url models.URL) error {
 }
 
 // Get url
-func (db *MemoryDB) Get(id string) (*models.URL, error) {
+func (db *MemoryDB) Get(ctx context.Context, id string) (*models.URL, error) {
 	txn := db.memory.Txn(false)
 	defer txn.Abort()
 	raw, err := txn.First("url", "id", id)

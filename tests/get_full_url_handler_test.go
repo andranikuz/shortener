@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -77,7 +78,7 @@ func TestGetFullURLHandler(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			for _, url := range test.args.urls {
-				a.DB.Save(url)
+				a.DB.Save(context.Background(), url)
 			}
 			req, _ := http.NewRequest(http.MethodGet, ts.URL+test.args.request, nil)
 			client := &http.Client{
