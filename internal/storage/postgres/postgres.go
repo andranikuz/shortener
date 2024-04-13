@@ -27,29 +27,14 @@ func NewPostgresDB(dsn string) (*PostgresDB, error) {
 	return &postgresDB, nil
 }
 
-func (db *PostgresDB) Migrate() error {
-	var tableExist bool
-	row := db.DB.QueryRow(`
-		SELECT EXISTS (
-    		SELECT 1 FROM information_schema.tables 
-    		WHERE table_name = 'url'
-		) AS table_exists
-	`)
-	err := row.Scan(&tableExist)
-	if err != nil {
-		log.Error().Msg(err.Error())
+func (db *PostgresDB) Migrate(ctx context.Context) error {
+	if _, err := db.DB.ExecContext(ctx, `
+		CREATE TABLE IF NOT EXISTS public.url (
+			id varchar NOT NULL,
+			full_url varchar NOT NULL
+		)
+	`); err != nil {
 		return err
-	}
-
-	if !tableExist {
-		if _, err = db.DB.Exec(`
-			CREATE TABLE public.url (
-				id varchar NOT NULL,
-				full_url varchar NOT NULL
-			)
-		`); err != nil {
-			return err
-		}
 	}
 
 	return nil
@@ -78,4 +63,28 @@ func (db *PostgresDB) Get(ctx context.Context, id string) (*models.URL, error) {
 	}
 
 	return &url, nil
+}
+
+// Save batch of urls
+func (db *PostgresDB) SaveBatch(ctx context.Context, urls []models.URL) error {
+	tx, err := db.DB.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	stmt, err := tx.PrepareContext(ctx, `INSERT INTO url (id, full_url) VALUES ($1,$2)`)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	for _, url := range urls {
+		_, err = stmt.ExecContext(ctx, url.ID, url.FullURL)
+		if err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit()
 }

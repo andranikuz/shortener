@@ -23,6 +23,9 @@ func Router(a app.Application) chi.Router {
 	r.Post("/api/shorten", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GenerateShortURLJSONHandler(w, r, a)
 	})
+	r.Post("/api/shorten/batch", func(w http.ResponseWriter, r *http.Request) {
+		handlers.GenerateShortURLBatchHandler(w, r, a)
+	})
 	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
 		handlers.PingHandler(w)
 	})

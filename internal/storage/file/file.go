@@ -14,16 +14,17 @@ type FileDB struct {
 
 func NewFileDB(path string) (*FileDB, error) {
 	db := FileDB{path}
-	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0666)
-	if err != nil {
-		return nil, err
-	}
-	file.Close()
 
 	return &db, nil
 }
 
-func (db *FileDB) Migrate() error {
+func (db *FileDB) Migrate(ctx context.Context) error {
+	file, err := os.OpenFile(db.filePath, os.O_RDWR|os.O_CREATE, 0666)
+	if err != nil {
+		return err
+	}
+	file.Close()
+
 	return nil
 }
 
@@ -63,4 +64,15 @@ func (db *FileDB) Get(ctx context.Context, id string) (*models.URL, error) {
 	}
 
 	return &url, err
+}
+
+// Save batch of urls
+func (db *FileDB) SaveBatch(ctx context.Context, urls []models.URL) error {
+	for _, url := range urls {
+		if err := db.Save(ctx, url); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
