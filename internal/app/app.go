@@ -30,6 +30,9 @@ func NewApplication() (*Application, error) {
 	var err error
 	if config.Config.DatabaseDSN != "" {
 		a.DB, err = postgres.NewPostgresDB(config.Config.DatabaseDSN)
+		if err != nil {
+			return nil, err
+		}
 	} else if config.Config.FileStoragePath != "" {
 		a.DB, err = file.NewFileDB(config.Config.FileStoragePath)
 		if err != nil {
