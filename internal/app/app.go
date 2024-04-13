@@ -19,7 +19,8 @@ type Application struct {
 type DBInterface interface {
 	Get(ctx context.Context, id string) (*models.URL, error)
 	Save(ctx context.Context, url models.URL) error
-	Migrate() error
+	SaveBatch(ctx context.Context, urls []models.URL) error
+	Migrate(ctx context.Context) error
 }
 
 func NewApplication() (*Application, error) {
@@ -44,7 +45,7 @@ func NewApplication() (*Application, error) {
 			return nil, err
 		}
 	}
-	if err = a.DB.Migrate(); err != nil {
+	if err = a.DB.Migrate(a.CTX); err != nil {
 		return nil, err
 	}
 

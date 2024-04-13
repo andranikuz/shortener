@@ -13,6 +13,12 @@ type MemoryDB struct {
 }
 
 func NewMemoryDB() (*MemoryDB, error) {
+	db := MemoryDB{}
+
+	return &db, nil
+}
+
+func (db *MemoryDB) Migrate(ctx context.Context) error {
 	schema := &memdb.DBSchema{
 		Tables: map[string]*memdb.TableSchema{
 			"url": &memdb.TableSchema{
@@ -35,15 +41,10 @@ func NewMemoryDB() (*MemoryDB, error) {
 	// Create database
 	memory, err := memdb.NewMemDB(schema)
 	if err != nil {
-		return nil, fmt.Errorf("init DB error %s", err.Error())
+		return err
 	}
+	db.memory = memory
 
-	db := MemoryDB{memory}
-
-	return &db, nil
-}
-
-func (db *MemoryDB) Migrate() error {
 	return nil
 }
 
@@ -75,4 +76,15 @@ func (db *MemoryDB) Get(ctx context.Context, id string) (*models.URL, error) {
 	}
 
 	return &url, nil
+}
+
+// Save batch of urls
+func (db *MemoryDB) SaveBatch(ctx context.Context, urls []models.URL) error {
+	for _, url := range urls {
+		if err := db.Save(ctx, url); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
