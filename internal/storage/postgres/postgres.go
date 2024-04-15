@@ -32,7 +32,8 @@ func (db *PostgresDB) Migrate(ctx context.Context) error {
 		CREATE TABLE IF NOT EXISTS public.url (
 			id varchar NOT NULL,
 			full_url varchar NOT NULL
-		)
+		);
+		CREATE UNIQUE INDEX IF NOT EXISTS url_full_url_idx ON public.url USING btree (full_url);
 	`); err != nil {
 		return err
 	}
@@ -55,9 +56,20 @@ func (db *PostgresDB) Save(ctx context.Context, url models.URL) error {
 // Get url
 func (db *PostgresDB) Get(ctx context.Context, id string) (*models.URL, error) {
 	row := db.DB.QueryRowContext(ctx, `SELECT id, full_url FROM url where id = $1`, id)
-	// готовим переменную для чтения результата
 	var url models.URL
-	err := row.Scan(&url.ID, &url.FullURL) // разбираем результат
+	err := row.Scan(&url.ID, &url.FullURL)
+	if err != nil {
+		panic(err)
+	}
+
+	return &url, nil
+}
+
+// Get url by full_url
+func (db *PostgresDB) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
+	row := db.DB.QueryRowContext(ctx, `SELECT id, full_url FROM url where full_url = $1`, fullURL)
+	var url models.URL
+	err := row.Scan(&url.ID, &url.FullURL)
 	if err != nil {
 		panic(err)
 	}
@@ -73,7 +85,7 @@ func (db *PostgresDB) SaveBatch(ctx context.Context, urls []models.URL) error {
 	}
 	defer tx.Rollback()
 
-	stmt, err := tx.PrepareContext(ctx, `INSERT INTO url (id, full_url) VALUES ($1,$2)`)
+	stmt, err := tx.PrepareContext(ctx, `INSERT INTO url (id, full_url) VALUES ($1,$2) ON CONFLICT DO NOTHING`)
 	if err != nil {
 		return err
 	}

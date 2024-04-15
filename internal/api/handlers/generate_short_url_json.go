@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
 
 	"github.com/andranikuz/shortener/internal/app"
+	"github.com/andranikuz/shortener/internal/models"
 	"github.com/andranikuz/shortener/internal/usecases"
 )
 
@@ -33,7 +35,16 @@ func GenerateShortURLJSONHandler(res http.ResponseWriter, req *http.Request, a a
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
-	shortURL := usecases.GenerateShortURL(a, request.URL)
+	code := http.StatusCreated
+	shortURL, err := usecases.GenerateShortURL(a, request.URL)
+	if err != nil {
+		if errors.Is(err, models.URLAlreadyExistsError) {
+			code = http.StatusConflict
+		} else {
+			res.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
 	if shortURL == "" {
 		res.WriteHeader(http.StatusBadRequest)
 		return
@@ -44,7 +55,7 @@ func GenerateShortURLJSONHandler(res http.ResponseWriter, req *http.Request, a a
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	res.WriteHeader(http.StatusCreated)
+	res.WriteHeader(code)
 	if _, err := res.Write(resp); err != nil {
 		log.Info().Msg(err.Error())
 		res.WriteHeader(http.StatusBadRequest)

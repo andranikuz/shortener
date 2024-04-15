@@ -17,8 +17,9 @@ type Application struct {
 }
 
 type DBInterface interface {
-	Get(ctx context.Context, id string) (*models.URL, error)
 	Save(ctx context.Context, url models.URL) error
+	Get(ctx context.Context, fullURL string) (*models.URL, error)
+	GetByFullURL(ctx context.Context, id string) (*models.URL, error)
 	SaveBatch(ctx context.Context, urls []models.URL) error
 	Migrate(ctx context.Context) error
 }

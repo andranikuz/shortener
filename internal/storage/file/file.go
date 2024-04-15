@@ -66,6 +66,27 @@ func (db *FileDB) Get(ctx context.Context, id string) (*models.URL, error) {
 	return &url, err
 }
 
+// Get url by full_url
+func (db *FileDB) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
+	c, err := newConsumer(db.filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer c.close()
+
+	data, err := c.findJSONByParam("full-url", fullURL)
+	if err != nil {
+		return nil, err
+	}
+	var url models.URL
+	err = json.Unmarshal(data, &url)
+	if err != nil {
+		return nil, err
+	}
+
+	return &url, err
+}
+
 // Save batch of urls
 func (db *FileDB) SaveBatch(ctx context.Context, urls []models.URL) error {
 	for _, url := range urls {

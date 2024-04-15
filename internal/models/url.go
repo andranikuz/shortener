@@ -1,6 +1,10 @@
 package models
 
-import "github.com/andranikuz/shortener/internal/config"
+import (
+	"errors"
+
+	"github.com/andranikuz/shortener/internal/config"
+)
 
 type URL struct {
 	ID      string `json:"id"`
@@ -10,3 +14,5 @@ type URL struct {
 func (url *URL) GetShorter() string {
 	return config.Config.BaseURL + "/" + url.ID
 }
+
+var URLAlreadyExistsError = errors.New(`url already exists`)

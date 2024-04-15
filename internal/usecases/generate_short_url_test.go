@@ -12,5 +12,7 @@ import (
 func TestGenerateShortURL(t *testing.T) {
 	a, err := app.NewApplication()
 	require.NoError(t, err)
-	assert.NotEmpty(t, GenerateShortURL(*a, "google.com"))
+	shorter, err := GenerateShortURL(*a, "google.com")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, shorter)
 }

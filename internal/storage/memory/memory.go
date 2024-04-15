@@ -78,6 +78,23 @@ func (db *MemoryDB) Get(ctx context.Context, id string) (*models.URL, error) {
 	return &url, nil
 }
 
+// Get url by full_url
+func (db *MemoryDB) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
+	txn := db.memory.Txn(false)
+	defer txn.Abort()
+	raw, err := txn.First("url", "url", fullURL)
+	if err != nil {
+		return nil, fmt.Errorf("getting index fullURL=%s error", fullURL)
+	}
+
+	url, ok := raw.(models.URL)
+	if !ok {
+		return nil, fmt.Errorf("index %s not found", fullURL)
+	}
+
+	return &url, nil
+}
+
 // Save batch of urls
 func (db *MemoryDB) SaveBatch(ctx context.Context, urls []models.URL) error {
 	for _, url := range urls {
