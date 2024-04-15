@@ -15,4 +15,4 @@ func (url *URL) GetShorter() string {
 	return config.Config.BaseURL + "/" + url.ID
 }
 
-var URLAlreadyExistsError = errors.New(`url already exists`)
+var ErrURLAlreadyExists = errors.New(`url already exists`)

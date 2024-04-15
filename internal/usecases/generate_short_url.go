@@ -22,7 +22,7 @@ func GenerateShortURL(a app.Application, fullURL string) (string, error) {
 				return oldURL.GetShorter(), err
 			}
 
-			return oldURL.GetShorter(), models.URLAlreadyExistsError
+			return oldURL.GetShorter(), models.ErrURLAlreadyExists
 		} else {
 			log.Error().Msg(err.Error())
 			return "", err

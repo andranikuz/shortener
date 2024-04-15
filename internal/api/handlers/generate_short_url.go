@@ -30,7 +30,7 @@ func GenerateShortURLHandler(res http.ResponseWriter, req *http.Request, a app.A
 	code := http.StatusCreated
 	shortURL, err := usecases.GenerateShortURL(a, fullURL)
 	if err != nil {
-		if errors.Is(err, models.URLAlreadyExistsError) {
+		if errors.Is(err, models.ErrURLAlreadyExists) {
 			code = http.StatusConflict
 		} else {
 			res.WriteHeader(http.StatusBadRequest)
