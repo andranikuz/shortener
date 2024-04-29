@@ -108,6 +108,9 @@ func (storage *PostgresStorage) GetByUserID(ctx context.Context, userID string) 
 	if err != nil {
 		return nil, err
 	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
 	for rows.Next() {
 		var url models.URL
 		if err = rows.Scan(&url.ID, &url.FullURL); err != nil {

@@ -36,7 +36,7 @@ func (h HTTPHandler) GenerateShortURLJSONHandler(ctx context.Context, res http.R
 		return
 	}
 	code := http.StatusCreated
-	userID := authorize.GetOrGenerateUserId(res, req)
+	userID := authorize.GetOrGenerateUserID(res, req)
 	shortURL, err := h.shortener.GenerateShortURL(ctx, request.URL, userID)
 	if err != nil {
 		if errors.Is(err, models.ErrURLAlreadyExists) {

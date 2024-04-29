@@ -18,7 +18,7 @@ func (h HTTPHandler) GenerateShortURLHandler(ctx context.Context, res http.Respo
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	userID := authorize.GetOrGenerateUserId(res, req)
+	userID := authorize.GetOrGenerateUserID(res, req)
 	body, _ := io.ReadAll(req.Body)
 	fullURL := string(body)
 	if fullURL == "" {

@@ -43,6 +43,7 @@ func TestGetFullURL(t *testing.T) {
 					"id1": {
 						ID:      "id1",
 						FullURL: "http://google.com",
+						UserID:  "userId",
 					},
 				},
 				id: "id1",

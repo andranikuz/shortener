@@ -33,7 +33,7 @@ func (h HTTPHandler) GenerateShortURLBatchHandler(ctx context.Context, res http.
 	if len(request) == 0 {
 		return
 	}
-	userID := authorize.GetOrGenerateUserId(res, req)
+	userID := authorize.GetOrGenerateUserID(res, req)
 	response, err := h.shortener.GenerateShortURLBatch(ctx, request, userID)
 	if err != nil {
 		log.Info().Msg(err.Error())
