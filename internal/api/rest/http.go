@@ -49,6 +49,9 @@ func (h HTTPHandler) Router(ctx context.Context) chi.Router {
 	r.Get("/api/user/urls", func(w http.ResponseWriter, r *http.Request) {
 		h.GetUserURLsHandler(ctx, w, r)
 	})
+	r.Delete("/api/user/urls", func(w http.ResponseWriter, r *http.Request) {
+		h.DeleteURLsHandler(ctx, w, r)
+	})
 
 	return r
 }

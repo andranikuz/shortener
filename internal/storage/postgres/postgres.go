@@ -32,7 +32,8 @@ func (storage *PostgresStorage) Migrate() error {
 		CREATE TABLE IF NOT EXISTS public.url (
 			id varchar NOT NULL,
 			full_url varchar NOT NULL,
-			user_id varchar NULL
+			user_id varchar NULL,
+			is_deleted bool NOT NULL
 		);
 		CREATE UNIQUE INDEX IF NOT EXISTS url_full_url_idx ON public.url USING btree (full_url);
 	`); err != nil {
@@ -45,9 +46,9 @@ func (storage *PostgresStorage) Migrate() error {
 // Save url
 func (storage *PostgresStorage) Save(ctx context.Context, url models.URL) error {
 	if _, err := storage.DB.ExecContext(ctx, `
-			INSERT INTO url (id, full_url, user_id)
-			VALUES ($1, $2, $3)
-		`, url.ID, url.FullURL, url.UserID); err != nil {
+			INSERT INTO url (id, full_url, user_id, is_deleted)
+			VALUES ($1, $2, $3, $4)
+		`, url.ID, url.FullURL, url.UserID, false); err != nil {
 		return err
 	}
 
@@ -56,9 +57,9 @@ func (storage *PostgresStorage) Save(ctx context.Context, url models.URL) error 
 
 // Get url
 func (storage *PostgresStorage) Get(ctx context.Context, id string) (*models.URL, error) {
-	row := storage.DB.QueryRowContext(ctx, `SELECT id, full_url FROM url where id = $1`, id)
+	row := storage.DB.QueryRowContext(ctx, `SELECT id, full_url, is_deleted FROM url where id = $1`, id)
 	var url models.URL
-	err := row.Scan(&url.ID, &url.FullURL)
+	err := row.Scan(&url.ID, &url.FullURL, &url.DeletedFlag)
 	if err != nil {
 		return nil, err
 	}
@@ -68,9 +69,9 @@ func (storage *PostgresStorage) Get(ctx context.Context, id string) (*models.URL
 
 // Get url by full_url
 func (storage *PostgresStorage) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
-	row := storage.DB.QueryRowContext(ctx, `SELECT id, full_url FROM url where full_url = $1`, fullURL)
+	row := storage.DB.QueryRowContext(ctx, `SELECT id, full_url, is_deleted FROM url where full_url = $1`, fullURL)
 	var url models.URL
-	err := row.Scan(&url.ID, &url.FullURL)
+	err := row.Scan(&url.ID, &url.FullURL, &url.DeletedFlag)
 	if err != nil {
 		return nil, err
 	}
@@ -86,14 +87,14 @@ func (storage *PostgresStorage) SaveBatch(ctx context.Context, urls []models.URL
 	}
 	defer tx.Rollback()
 
-	stmt, err := tx.PrepareContext(ctx, `INSERT INTO url (id, full_url, user_id) VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`)
+	stmt, err := tx.PrepareContext(ctx, `INSERT INTO url (id, full_url, user_id, is_deleted) VALUES ($1,$2,$3,$4) ON CONFLICT DO NOTHING`)
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
 	for _, url := range urls {
-		_, err = stmt.ExecContext(ctx, url.ID, url.FullURL, url.UserID)
+		_, err = stmt.ExecContext(ctx, url.ID, url.FullURL, url.UserID, false)
 		if err != nil {
 			return err
 		}
@@ -104,7 +105,7 @@ func (storage *PostgresStorage) SaveBatch(ctx context.Context, urls []models.URL
 
 func (storage *PostgresStorage) GetByUserID(ctx context.Context, userID string) ([]models.URL, error) {
 	var urls []models.URL
-	rows, err := storage.DB.QueryContext(ctx, `SELECT id, full_url FROM url WHERE user_id = $1`, userID)
+	rows, err := storage.DB.QueryContext(ctx, `SELECT id, full_url, is_deleted FROM url WHERE user_id = $1`, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -113,11 +114,39 @@ func (storage *PostgresStorage) GetByUserID(ctx context.Context, userID string) 
 	}
 	for rows.Next() {
 		var url models.URL
-		if err = rows.Scan(&url.ID, &url.FullURL); err != nil {
+		if err = rows.Scan(&url.ID, &url.FullURL, &url.DeletedFlag); err != nil {
 			return urls, err
 		}
 		urls = append(urls, url)
 	}
 
 	return urls, nil
+}
+
+func (storage *PostgresStorage) DeleteURLs(ctx context.Context, ids []string, userID string) error {
+	tx, err := storage.DB.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	stmt, err := tx.PrepareContext(ctx, `
+		UPDATE url 
+		SET is_deleted = true 
+		WHERE id = $1
+		AND user_id = $2
+	`)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	for _, id := range ids {
+		_, err = stmt.ExecContext(ctx, id, userID)
+		if err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit()
 }

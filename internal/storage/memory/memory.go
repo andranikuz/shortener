@@ -122,3 +122,7 @@ func (storage *MemoryStorage) GetByUserID(ctx context.Context, userID string) ([
 
 	return urls, nil
 }
+
+func (storage *MemoryStorage) DeleteURLs(ctx context.Context, ids []string, userID string) error {
+	return nil
+}

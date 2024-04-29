@@ -65,7 +65,9 @@ func TestGetFullURL(t *testing.T) {
 			for _, url := range test.args.urls {
 				s.storage.Save(context.Background(), url)
 			}
-			assert.Equal(t, test.want, s.GetFullURL(context.Background(), test.args.id), "GetFullURL(%v)", test.args.id)
+			fullURL, err := s.GetFullURL(context.Background(), test.args.id)
+			assert.NoError(t, err)
+			assert.Equal(t, test.want, fullURL, "GetFullURL(%v)", test.args.id)
 		})
 	}
 }
