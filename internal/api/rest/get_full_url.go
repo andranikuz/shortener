@@ -2,10 +2,13 @@ package rest
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog/log"
+
+	"github.com/andranikuz/shortener/internal/models"
 )
 
 func (h HTTPHandler) GetFullURLHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
@@ -15,10 +18,16 @@ func (h HTTPHandler) GetFullURLHandler(ctx context.Context, res http.ResponseWri
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fullURL := h.shortener.GetFullURL(ctx, id)
-	if fullURL == "" {
-		res.WriteHeader(http.StatusBadRequest)
-		return
+	fullURL, err := h.shortener.GetFullURL(ctx, id)
+	if err != nil {
+		if errors.Is(err, models.ErrURLDeleted) {
+			log.Info().Msg(err.Error())
+			res.WriteHeader(http.StatusGone)
+			return
+		} else {
+			res.WriteHeader(http.StatusBadRequest)
+			return
+		}
 	}
 	res.Header().Set("Location", fullURL)
 	res.WriteHeader(http.StatusTemporaryRedirect)

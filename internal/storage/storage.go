@@ -12,4 +12,5 @@ type Storage interface {
 	GetByUserID(ctx context.Context, userID string) ([]models.URL, error)
 	GetByFullURL(ctx context.Context, id string) (*models.URL, error)
 	SaveBatch(ctx context.Context, urls []models.URL) error
+	DeleteURLs(ctx context.Context, ids []string, userID string) error
 }

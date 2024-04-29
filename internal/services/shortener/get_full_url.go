@@ -4,14 +4,20 @@ import (
 	"context"
 
 	"github.com/rs/zerolog/log"
+
+	"github.com/andranikuz/shortener/internal/models"
 )
 
-func (s *Shortener) GetFullURL(ctx context.Context, id string) string {
+func (s *Shortener) GetFullURL(ctx context.Context, id string) (string, error) {
 	url, err := s.storage.Get(ctx, id)
 	if err != nil {
 		log.Info().Msg(err.Error())
-		return ""
+		return "", err
 	}
 
-	return url.FullURL
+	if url.DeletedFlag {
+		return "", models.ErrURLDeleted
+	}
+
+	return url.FullURL, nil
 }

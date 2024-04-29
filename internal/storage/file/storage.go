@@ -114,3 +114,7 @@ func (storage *FileStorage) GetByUserID(ctx context.Context, userID string) ([]m
 
 	return urls, err
 }
+
+func (storage *FileStorage) DeleteURLs(ctx context.Context, ids []string, userID string) error {
+	return nil
+}
