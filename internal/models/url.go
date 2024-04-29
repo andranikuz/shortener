@@ -9,6 +9,7 @@ import (
 type URL struct {
 	ID      string `json:"id"`
 	FullURL string `json:"full-url"`
+	UserID  string `json:"user-id"`
 }
 
 func (url *URL) GetShorter() string {

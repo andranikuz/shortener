@@ -21,7 +21,7 @@ func getShortener(t *testing.T) *Shortener {
 
 func TestGenerateShortURL(t *testing.T) {
 	s := getShortener(t)
-	shorter, err := s.GenerateShortURL(context.Background(), "google.com")
+	shorter, err := s.GenerateShortURL(context.Background(), "google.com", "userID")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, shorter)
 }

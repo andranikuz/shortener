@@ -30,6 +30,11 @@ func NewMemoryStorage() (*MemoryStorage, error) {
 						Unique:  false,
 						Indexer: &memdb.StringFieldIndex{Field: "FullURL"},
 					},
+					"user_id": &memdb.IndexSchema{
+						Name:    "user_id",
+						Unique:  false,
+						Indexer: &memdb.StringFieldIndex{Field: "UserID"},
+					},
 				},
 			},
 		},
@@ -100,4 +105,20 @@ func (storage *MemoryStorage) SaveBatch(ctx context.Context, urls []models.URL) 
 	}
 
 	return nil
+}
+
+func (storage *MemoryStorage) GetByUserID(ctx context.Context, userID string) ([]models.URL, error) {
+	txn := storage.memory.Txn(false)
+	defer txn.Abort()
+	rows, err := txn.Get("url", "user_id", userID)
+	if err != nil {
+		return nil, fmt.Errorf("getting index userID=%s error", userID)
+	}
+	var urls []models.URL
+	for obj := rows.Next(); obj != nil; obj = rows.Next() {
+		url := obj.(models.URL)
+		urls = append(urls, url)
+	}
+
+	return urls, nil
 }

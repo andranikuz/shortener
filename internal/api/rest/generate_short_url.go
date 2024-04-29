@@ -9,6 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/andranikuz/shortener/internal/models"
+	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
 func (h HTTPHandler) GenerateShortURLHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
@@ -17,17 +18,15 @@ func (h HTTPHandler) GenerateShortURLHandler(ctx context.Context, res http.Respo
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
+	userID := authorize.GetOrGenerateUserId(res, req)
 	body, _ := io.ReadAll(req.Body)
-
 	fullURL := string(body)
 	if fullURL == "" {
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	code := http.StatusCreated
-	shortURL, err := h.shortener.GenerateShortURL(ctx, fullURL)
+	shortURL, err := h.shortener.GenerateShortURL(ctx, fullURL, userID)
 	if err != nil {
 		if errors.Is(err, models.ErrURLAlreadyExists) {
 			code = http.StatusConflict
