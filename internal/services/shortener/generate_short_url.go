@@ -11,9 +11,9 @@ import (
 	"github.com/andranikuz/shortener/internal/utils/generator"
 )
 
-func (s *Shortener) GenerateShortURL(ctx context.Context, fullURL string) (string, error) {
+func (s *Shortener) GenerateShortURL(ctx context.Context, fullURL string, userID string) (string, error) {
 	id := generator.GenerateUniqueID()
-	url := models.URL{ID: id, FullURL: fullURL}
+	url := models.URL{ID: id, FullURL: fullURL, UserID: userID}
 	if s.storage == nil {
 		return "sdf", nil
 	}

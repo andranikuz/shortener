@@ -16,12 +16,12 @@ type ShortenItem struct {
 	ShortURL      string `json:"short_url"`
 }
 
-func (s *Shortener) GenerateShortURLBatch(ctx context.Context, items []OriginalItem) ([]ShortenItem, error) {
+func (s *Shortener) GenerateShortURLBatch(ctx context.Context, items []OriginalItem, userID string) ([]ShortenItem, error) {
 	var urls []models.URL
 	var result []ShortenItem
 	var url models.URL
 	for _, item := range items {
-		url = models.URL{ID: item.CorrelationID, FullURL: item.OriginalURL}
+		url = models.URL{ID: item.CorrelationID, FullURL: item.OriginalURL, UserID: userID}
 		urls = append(urls, url)
 		result = append(result, ShortenItem{item.CorrelationID, url.GetShorter()})
 	}

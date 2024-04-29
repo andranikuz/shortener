@@ -2,9 +2,8 @@ package rest
 
 import (
 	"context"
-	"net/http"
-
 	"github.com/go-chi/chi/v5"
+	"net/http"
 
 	"github.com/andranikuz/shortener/internal/api/rest/middlewares"
 	"github.com/andranikuz/shortener/internal/container"
@@ -46,6 +45,9 @@ func (h HTTPHandler) Router(ctx context.Context) chi.Router {
 	})
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
+	})
+	r.Get("/api/user/urls", func(w http.ResponseWriter, r *http.Request) {
+		h.GetUserURLsHandler(ctx, w, r)
 	})
 
 	return r
