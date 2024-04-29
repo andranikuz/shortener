@@ -36,7 +36,7 @@ func (h HTTPHandler) GetUserURLsHandler(ctx context.Context, res http.ResponseWr
 		res.WriteHeader(http.StatusNoContent)
 		return
 	}
-
+	res.WriteHeader(http.StatusOK)
 	resp, err := json.Marshal(response)
 	if err != nil {
 		log.Info().Msg(err.Error())
