@@ -1,4 +1,4 @@
-package handlers
+package rest
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 	"github.com/andranikuz/shortener/internal/storage/postgres"
 )
 
-func PingHandler(res http.ResponseWriter) {
+func (h HTTPHandler) PingHandler(res http.ResponseWriter) {
 	if config.Config.DatabaseDSN == "" {
 		log.Info().Msg("database dsn is not init")
 		res.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	db, err := postgres.NewPostgresDB(config.Config.DatabaseDSN)
+	db, err := postgres.NewPostgresStorage(config.Config.DatabaseDSN)
 	if err != nil {
 		log.Info().Msg(fmt.Sprintf("postgres connect error: %s", err.Error()))
 		res.WriteHeader(http.StatusInternalServerError)

@@ -1,21 +1,21 @@
-package handlers
+package rest
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/andranikuz/shortener/internal/app"
-	"github.com/andranikuz/shortener/internal/usecases"
+	"github.com/andranikuz/shortener/internal/services/shortener"
 )
 
-type GenerateShortURLBatchHandlerRequest []usecases.OriginalItem
+type GenerateShortURLBatchHandlerRequest []shortener.OriginalItem
 
-type GenerateShortURLBatchHandlerResponse []usecases.ShortenItem
+type GenerateShortURLBatchHandlerResponse []shortener.ShortenItem
 
-func GenerateShortURLBatchHandler(res http.ResponseWriter, req *http.Request, a app.Application) {
+func (h HTTPHandler) GenerateShortURLBatchHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	if err := req.ParseForm(); err != nil {
 		log.Info().Msg(err.Error())
@@ -32,7 +32,7 @@ func GenerateShortURLBatchHandler(res http.ResponseWriter, req *http.Request, a 
 	if len(request) == 0 {
 		return
 	}
-	response, err := usecases.GenerateShortURLBatch(a, request)
+	response, err := h.shortener.GenerateShortURLBatch(ctx, request)
 	if err != nil {
 		log.Info().Msg(err.Error())
 		res.WriteHeader(http.StatusBadRequest)

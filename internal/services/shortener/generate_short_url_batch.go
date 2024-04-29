@@ -1,7 +1,8 @@
-package usecases
+package shortener
 
 import (
-	"github.com/andranikuz/shortener/internal/app"
+	"context"
+
 	"github.com/andranikuz/shortener/internal/models"
 )
 
@@ -15,7 +16,7 @@ type ShortenItem struct {
 	ShortURL      string `json:"short_url"`
 }
 
-func GenerateShortURLBatch(a app.Application, items []OriginalItem) ([]ShortenItem, error) {
+func (s *Shortener) GenerateShortURLBatch(ctx context.Context, items []OriginalItem) ([]ShortenItem, error) {
 	var urls []models.URL
 	var result []ShortenItem
 	var url models.URL
@@ -25,7 +26,7 @@ func GenerateShortURLBatch(a app.Application, items []OriginalItem) ([]ShortenIt
 		result = append(result, ShortenItem{item.CorrelationID, url.GetShorter()})
 	}
 
-	if err := a.DB.SaveBatch(a.CTX, urls); err != nil {
+	if err := s.storage.SaveBatch(ctx, urls); err != nil {
 		return result, err
 	}
 

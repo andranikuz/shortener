@@ -1,23 +1,26 @@
-package usecases
+package shortener
 
 import (
+	"context"
 	"strings"
 
 	"github.com/jackc/pgerrcode"
 	"github.com/rs/zerolog/log"
 
-	"github.com/andranikuz/shortener/internal/app"
 	"github.com/andranikuz/shortener/internal/models"
 	"github.com/andranikuz/shortener/internal/utils/generator"
 )
 
-func GenerateShortURL(a app.Application, fullURL string) (string, error) {
+func (s *Shortener) GenerateShortURL(ctx context.Context, fullURL string) (string, error) {
 	id := generator.GenerateUniqueID()
 	url := models.URL{ID: id, FullURL: fullURL}
-	if err := a.DB.Save(a.CTX, url); err != nil {
+	if s.storage == nil {
+		return "sdf", nil
+	}
+	if err := s.storage.Save(ctx, url); err != nil {
 		if strings.Contains(err.Error(), pgerrcode.UniqueViolation) {
 			var oldURL *models.URL
-			oldURL, err = a.DB.GetByFullURL(a.CTX, fullURL)
+			oldURL, err = s.storage.GetByFullURL(ctx, fullURL)
 			if err != nil {
 				return oldURL.GetShorter(), err
 			}

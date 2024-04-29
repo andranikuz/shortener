@@ -8,33 +8,28 @@ import (
 	"github.com/andranikuz/shortener/internal/models"
 )
 
-type FileDB struct {
+type FileStorage struct {
 	filePath string
 }
 
-func NewFileDB(path string) (*FileDB, error) {
-	db := FileDB{path}
-
-	return &db, nil
-}
-
-func (db *FileDB) Migrate(ctx context.Context) error {
-	file, err := os.OpenFile(db.filePath, os.O_RDWR|os.O_CREATE, 0666)
+func NewFileStorage(path string) (*FileStorage, error) {
+	storage := FileStorage{path}
+	file, err := os.OpenFile(storage.filePath, os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	file.Close()
 
-	return nil
+	return &storage, nil
 }
 
 // Save url
-func (db *FileDB) Save(ctx context.Context, url models.URL) error {
+func (storage *FileStorage) Save(ctx context.Context, url models.URL) error {
 	data, err := json.Marshal(&url)
 	if err != nil {
 		return err
 	}
-	p, err := newProducer(db.filePath)
+	p, err := newProducer(storage.filePath)
 	if err != nil {
 		return err
 	}
@@ -46,8 +41,8 @@ func (db *FileDB) Save(ctx context.Context, url models.URL) error {
 }
 
 // Get url
-func (db *FileDB) Get(ctx context.Context, id string) (*models.URL, error) {
-	c, err := newConsumer(db.filePath)
+func (storage *FileStorage) Get(ctx context.Context, id string) (*models.URL, error) {
+	c, err := newConsumer(storage.filePath)
 	if err != nil {
 		return nil, err
 	}
@@ -67,8 +62,8 @@ func (db *FileDB) Get(ctx context.Context, id string) (*models.URL, error) {
 }
 
 // Get url by full_url
-func (db *FileDB) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
-	c, err := newConsumer(db.filePath)
+func (storage *FileStorage) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
+	c, err := newConsumer(storage.filePath)
 	if err != nil {
 		return nil, err
 	}
@@ -88,9 +83,9 @@ func (db *FileDB) GetByFullURL(ctx context.Context, fullURL string) (*models.URL
 }
 
 // Save batch of urls
-func (db *FileDB) SaveBatch(ctx context.Context, urls []models.URL) error {
+func (storage *FileStorage) SaveBatch(ctx context.Context, urls []models.URL) error {
 	for _, url := range urls {
-		if err := db.Save(ctx, url); err != nil {
+		if err := storage.Save(ctx, url); err != nil {
 			return err
 		}
 	}

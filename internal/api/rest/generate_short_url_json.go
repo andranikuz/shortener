@@ -1,6 +1,7 @@
-package handlers
+package rest
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -8,9 +9,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/andranikuz/shortener/internal/app"
 	"github.com/andranikuz/shortener/internal/models"
-	"github.com/andranikuz/shortener/internal/usecases"
 )
 
 type GenerateShortURLJSONHandlerRequest struct {
@@ -21,7 +20,7 @@ type GenerateShortURLJSONHandlerResponse struct {
 	Result string `json:"result"`
 }
 
-func GenerateShortURLJSONHandler(res http.ResponseWriter, req *http.Request, a app.Application) {
+func (h HTTPHandler) GenerateShortURLJSONHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	if err := req.ParseForm(); err != nil {
 		log.Info().Msg(err.Error())
@@ -36,7 +35,7 @@ func GenerateShortURLJSONHandler(res http.ResponseWriter, req *http.Request, a a
 		return
 	}
 	code := http.StatusCreated
-	shortURL, err := usecases.GenerateShortURL(a, request.URL)
+	shortURL, err := h.shortener.GenerateShortURL(ctx, request.URL)
 	if err != nil {
 		if errors.Is(err, models.ErrURLAlreadyExists) {
 			code = http.StatusConflict

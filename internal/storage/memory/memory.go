@@ -3,22 +3,18 @@ package memory
 import (
 	"context"
 	"fmt"
+
 	"github.com/hashicorp/go-memdb"
 
 	"github.com/andranikuz/shortener/internal/models"
 )
 
-type MemoryDB struct {
+type MemoryStorage struct {
 	memory *memdb.MemDB
 }
 
-func NewMemoryDB() (*MemoryDB, error) {
-	db := MemoryDB{}
-
-	return &db, nil
-}
-
-func (db *MemoryDB) Migrate(ctx context.Context) error {
+func NewMemoryStorage() (*MemoryStorage, error) {
+	db := MemoryStorage{}
 	schema := &memdb.DBSchema{
 		Tables: map[string]*memdb.TableSchema{
 			"url": &memdb.TableSchema{
@@ -41,16 +37,16 @@ func (db *MemoryDB) Migrate(ctx context.Context) error {
 	// Create database
 	memory, err := memdb.NewMemDB(schema)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	db.memory = memory
 
-	return nil
+	return &db, nil
 }
 
 // Save url
-func (db *MemoryDB) Save(ctx context.Context, url models.URL) error {
-	txn := db.memory.Txn(true)
+func (storage *MemoryStorage) Save(ctx context.Context, url models.URL) error {
+	txn := storage.memory.Txn(true)
 	defer txn.Abort()
 
 	if err := txn.Insert("url", url); err != nil {
@@ -62,8 +58,8 @@ func (db *MemoryDB) Save(ctx context.Context, url models.URL) error {
 }
 
 // Get url
-func (db *MemoryDB) Get(ctx context.Context, id string) (*models.URL, error) {
-	txn := db.memory.Txn(false)
+func (storage *MemoryStorage) Get(ctx context.Context, id string) (*models.URL, error) {
+	txn := storage.memory.Txn(false)
 	defer txn.Abort()
 	raw, err := txn.First("url", "id", id)
 	if err != nil {
@@ -79,8 +75,8 @@ func (db *MemoryDB) Get(ctx context.Context, id string) (*models.URL, error) {
 }
 
 // Get url by full_url
-func (db *MemoryDB) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
-	txn := db.memory.Txn(false)
+func (storage *MemoryStorage) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
+	txn := storage.memory.Txn(false)
 	defer txn.Abort()
 	raw, err := txn.First("url", "url", fullURL)
 	if err != nil {
@@ -96,9 +92,9 @@ func (db *MemoryDB) GetByFullURL(ctx context.Context, fullURL string) (*models.U
 }
 
 // Save batch of urls
-func (db *MemoryDB) SaveBatch(ctx context.Context, urls []models.URL) error {
+func (storage *MemoryStorage) SaveBatch(ctx context.Context, urls []models.URL) error {
 	for _, url := range urls {
-		if err := db.Save(ctx, url); err != nil {
+		if err := storage.Save(ctx, url); err != nil {
 			return err
 		}
 	}
