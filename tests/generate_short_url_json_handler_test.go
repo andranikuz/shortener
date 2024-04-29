@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -10,15 +11,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/andranikuz/shortener/internal/api"
-	"github.com/andranikuz/shortener/internal/app"
 	"github.com/andranikuz/shortener/internal/config"
 )
 
 func TestGetShortenByFullUrlJSONHandler(t *testing.T) {
-	a, err := app.NewApplication()
-	require.NoError(t, err)
-	ts := httptest.NewServer(api.Router(*a))
+	h := getHTTPHandler(t)
+	ts := httptest.NewServer(h.Router(context.Background()))
 	type args struct {
 		body    string
 		request string

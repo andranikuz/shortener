@@ -1,4 +1,4 @@
-package usecases
+package shortener
 
 import (
 	"context"
@@ -7,13 +7,26 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/andranikuz/shortener/internal/app"
 	"github.com/andranikuz/shortener/internal/models"
+	"github.com/andranikuz/shortener/internal/storage/memory"
 )
 
-func TestGetFullURL(t *testing.T) {
-	a, err := app.NewApplication()
+func getShortener(t *testing.T) *Shortener {
+	storage, err := memory.NewMemoryStorage()
 	require.NoError(t, err)
+	s := NewShortener(storage)
+
+	return s
+}
+
+func TestGenerateShortURL(t *testing.T) {
+	s := getShortener(t)
+	shorter, err := s.GenerateShortURL(context.Background(), "google.com")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, shorter)
+}
+
+func TestGetFullURL(t *testing.T) {
 	type args struct {
 		urls map[string]models.URL
 		id   string
@@ -45,12 +58,13 @@ func TestGetFullURL(t *testing.T) {
 			want: "",
 		},
 	}
+	s := getShortener(t)
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			for _, url := range test.args.urls {
-				a.DB.Save(context.Background(), url)
+				s.storage.Save(context.Background(), url)
 			}
-			assert.Equal(t, test.want, GetFullURL(*a, test.args.id), "GetFullURL(%v)", test.args.id)
+			assert.Equal(t, test.want, s.GetFullURL(context.Background(), test.args.id), "GetFullURL(%v)", test.args.id)
 		})
 	}
 }

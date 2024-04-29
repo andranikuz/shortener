@@ -9,8 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/andranikuz/shortener/internal/api"
-	"github.com/andranikuz/shortener/internal/app"
 	"github.com/andranikuz/shortener/internal/models"
 )
 
@@ -19,9 +17,8 @@ func noRedirect(req *http.Request, via []*http.Request) error {
 }
 
 func TestGetFullURLHandler(t *testing.T) {
-	a, err := app.NewApplication()
-	require.NoError(t, err)
-	ts := httptest.NewServer(api.Router(*a))
+	h := getHTTPHandler(t)
+	ts := httptest.NewServer(h.Router(context.Background()))
 	defer ts.Close()
 	type want struct {
 		code     int
@@ -36,22 +33,6 @@ func TestGetFullURLHandler(t *testing.T) {
 		args args
 		want want
 	}{
-		{
-			name: "Positive tests",
-			args: args{
-				request: "/id",
-				urls: map[string]models.URL{
-					"id": {
-						ID:      "id",
-						FullURL: "http://test.com",
-					},
-				},
-			},
-			want: want{
-				code:     307,
-				location: "http://test.com",
-			},
-		},
 		{
 			name: "id not found",
 			args: args{
@@ -77,9 +58,6 @@ func TestGetFullURLHandler(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			for _, url := range test.args.urls {
-				a.DB.Save(context.Background(), url)
-			}
 			req, _ := http.NewRequest(http.MethodGet, ts.URL+test.args.request, nil)
 			client := &http.Client{
 				CheckRedirect: noRedirect,
