@@ -92,3 +92,29 @@ func (storage *FileStorage) SaveBatch(ctx context.Context, urls []models.URL) er
 
 	return nil
 }
+
+func (storage *FileStorage) GetByUserID(ctx context.Context, userID string) ([]models.URL, error) {
+	c, err := newConsumer(storage.filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer c.close()
+
+	data, err := c.findJSONByParam("user-id", userID)
+	if err != nil {
+		return nil, err
+	}
+	var url models.URL
+	err = json.Unmarshal(data, &url)
+	if err != nil {
+		return nil, err
+	}
+	var urls []models.URL
+	urls = append(urls, url)
+
+	return urls, err
+}
+
+func (storage *FileStorage) DeleteURLs(ctx context.Context, ids []string, userID string) error {
+	return nil
+}

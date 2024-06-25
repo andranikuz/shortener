@@ -9,6 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/andranikuz/shortener/internal/services/shortener"
+	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
 type GenerateShortURLBatchHandlerRequest []shortener.OriginalItem
@@ -32,7 +33,8 @@ func (h HTTPHandler) GenerateShortURLBatchHandler(ctx context.Context, res http.
 	if len(request) == 0 {
 		return
 	}
-	response, err := h.shortener.GenerateShortURLBatch(ctx, request)
+	userID := authorize.GetOrGenerateUserID(res, req)
+	response, err := h.shortener.GenerateShortURLBatch(ctx, request, userID)
 	if err != nil {
 		log.Info().Msg(err.Error())
 		res.WriteHeader(http.StatusBadRequest)

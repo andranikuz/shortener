@@ -7,8 +7,10 @@ import (
 )
 
 type URL struct {
-	ID      string `json:"id"`
-	FullURL string `json:"full-url"`
+	ID          string `json:"id"`
+	FullURL     string `json:"full-url"`
+	UserID      string `json:"user-id"`
+	DeletedFlag bool   `json:"deleted-flag"`
 }
 
 func (url *URL) GetShorter() string {
@@ -16,3 +18,5 @@ func (url *URL) GetShorter() string {
 }
 
 var ErrURLAlreadyExists = errors.New(`url already exists`)
+
+var ErrURLDeleted = errors.New(`url deleted`)

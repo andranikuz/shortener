@@ -21,7 +21,7 @@ func getShortener(t *testing.T) *Shortener {
 
 func TestGenerateShortURL(t *testing.T) {
 	s := getShortener(t)
-	shorter, err := s.GenerateShortURL(context.Background(), "google.com")
+	shorter, err := s.GenerateShortURL(context.Background(), "google.com", "userID")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, shorter)
 }
@@ -43,6 +43,7 @@ func TestGetFullURL(t *testing.T) {
 					"id1": {
 						ID:      "id1",
 						FullURL: "http://google.com",
+						UserID:  "userId",
 					},
 				},
 				id: "id1",
@@ -64,7 +65,8 @@ func TestGetFullURL(t *testing.T) {
 			for _, url := range test.args.urls {
 				s.storage.Save(context.Background(), url)
 			}
-			assert.Equal(t, test.want, s.GetFullURL(context.Background(), test.args.id), "GetFullURL(%v)", test.args.id)
+			fullURL, _ := s.GetFullURL(context.Background(), test.args.id)
+			assert.Equal(t, test.want, fullURL, "GetFullURL(%v)", test.args.id)
 		})
 	}
 }

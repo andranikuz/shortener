@@ -10,6 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/andranikuz/shortener/internal/models"
+	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
 type GenerateShortURLJSONHandlerRequest struct {
@@ -35,7 +36,8 @@ func (h HTTPHandler) GenerateShortURLJSONHandler(ctx context.Context, res http.R
 		return
 	}
 	code := http.StatusCreated
-	shortURL, err := h.shortener.GenerateShortURL(ctx, request.URL)
+	userID := authorize.GetOrGenerateUserID(res, req)
+	shortURL, err := h.shortener.GenerateShortURL(ctx, request.URL, userID)
 	if err != nil {
 		if errors.Is(err, models.ErrURLAlreadyExists) {
 			code = http.StatusConflict
