@@ -2,8 +2,10 @@ package rest
 
 import (
 	"context"
-	"github.com/go-chi/chi/v5"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/andranikuz/shortener/internal/api/rest/middlewares"
 	"github.com/andranikuz/shortener/internal/container"
@@ -52,6 +54,7 @@ func (h HTTPHandler) Router(ctx context.Context) chi.Router {
 	r.Delete("/api/user/urls", func(w http.ResponseWriter, r *http.Request) {
 		h.DeleteURLsHandler(ctx, w, r)
 	})
+	r.Mount("/debug", middleware.Profiler())
 
 	return r
 }

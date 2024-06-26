@@ -4,15 +4,15 @@ import (
 	"context"
 	"strings"
 
+	"github.com/hashicorp/go-uuid"
 	"github.com/jackc/pgerrcode"
 	"github.com/rs/zerolog/log"
 
 	"github.com/andranikuz/shortener/internal/models"
-	"github.com/andranikuz/shortener/internal/utils/generator"
 )
 
 func (s *Shortener) GenerateShortURL(ctx context.Context, fullURL string, userID string) (string, error) {
-	id := generator.GenerateUniqueID()
+	id, _ := uuid.GenerateUUID()
 	url := models.URL{ID: id, FullURL: fullURL, UserID: userID}
 	if s.storage == nil {
 		return "sdf", nil
