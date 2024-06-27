@@ -31,7 +31,7 @@ func ExampleHTTPHandler_GenerateShortURLHandler() {
 	// Status Code: 201
 }
 
-func ExampleHTTPHandler_GenerateShortUrlJSONHandler() {
+func ExampleHTTPHandler_GenerateShortURLJSONHandler() {
 	cnt, _ := container.NewContainer()
 	h := rest.NewHTTPHandler(cnt)
 	ts := httptest.NewServer(h.Router(context.Background()))
