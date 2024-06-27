@@ -16,7 +16,10 @@ func ExampleGenerateShortURLHandler() {
 	h := rest.NewHTTPHandler(cnt)
 	ts := httptest.NewServer(h.Router(context.Background()))
 	reader := strings.NewReader("google.com")
-	req, _ := http.NewRequest(http.MethodPost, ts.URL, reader)
+	req, err := http.NewRequest(http.MethodPost, ts.URL, reader)
+	if err != nil {
+		fmt.Println("Status Code:", 500)
+	}
 	res, _ := ts.Client().Do(req)
 	defer res.Body.Close()
 	fmt.Println("Status Code:", res.StatusCode)
@@ -30,7 +33,10 @@ func ExampleGenerateShortUrlJSONHandler() {
 	h := rest.NewHTTPHandler(cnt)
 	ts := httptest.NewServer(h.Router(context.Background()))
 	reader := strings.NewReader("{\"url\": \"http://google.com\"}")
-	req, _ := http.NewRequest(http.MethodPost, ts.URL, reader)
+	req, err := http.NewRequest(http.MethodPost, ts.URL, reader)
+	if err != nil {
+		fmt.Println("Status Code:", 500)
+	}
 	res, _ := ts.Client().Do(req)
 	defer res.Body.Close()
 	fmt.Println("Status Code:", res.StatusCode)
@@ -44,11 +50,14 @@ func ExampleDeleteURLsHandler() {
 	h := rest.NewHTTPHandler(cnt)
 	ts := httptest.NewServer(h.Router(context.Background()))
 	reader := strings.NewReader("[\"id\"]")
-	req, _ := http.NewRequest(http.MethodDelete, ts.URL+"/api/user/urls", reader)
+	req, err := http.NewRequest(http.MethodDelete, ts.URL+"/api/user/urls", reader)
+	if err != nil {
+		fmt.Println("Status Code:", 500)
+	}
 	res, _ := ts.Client().Do(req)
 	defer res.Body.Close()
 	fmt.Println("Status Code:", res.StatusCode)
-	
+
 	// Output:
 	// Status Code: 202
 }
