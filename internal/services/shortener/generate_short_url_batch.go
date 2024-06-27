@@ -6,11 +6,13 @@ import (
 	"github.com/andranikuz/shortener/internal/models"
 )
 
+// OriginalItem структура оригинального URL.
 type OriginalItem struct {
 	CorrelationID string `json:"correlation_id"`
 	OriginalURL   string `json:"original_url"`
 }
 
+// ShortenItem структура сокращенного URL.
 type ShortenItem struct {
 	CorrelationID string `json:"correlation_id"`
 	ShortURL      string `json:"short_url"`
