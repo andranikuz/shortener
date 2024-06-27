@@ -3,14 +3,15 @@ package tests
 import (
 	"context"
 	"fmt"
-	"github.com/andranikuz/shortener/internal/api/rest"
-	"github.com/andranikuz/shortener/internal/container"
 	"net/http"
 	"net/http/httptest"
 	"strings"
+
+	"github.com/andranikuz/shortener/internal/api/rest"
+	"github.com/andranikuz/shortener/internal/container"
 )
 
-func ExampleGenerateShortUrlHandler() {
+func ExampleGenerateShortURLHandler() {
 	cnt, _ := container.NewContainer()
 	h := rest.NewHTTPHandler(cnt)
 	ts := httptest.NewServer(h.Router(context.Background()))
@@ -19,6 +20,7 @@ func ExampleGenerateShortUrlHandler() {
 	res, _ := ts.Client().Do(req)
 	defer res.Body.Close()
 	fmt.Println("Status Code:", res.StatusCode)
+
 	// Output:
 	// Status Code: 201
 }
@@ -32,6 +34,7 @@ func ExampleGenerateShortUrlJSONHandler() {
 	res, _ := ts.Client().Do(req)
 	defer res.Body.Close()
 	fmt.Println("Status Code:", res.StatusCode)
+
 	// Output:
 	// Status Code: 201
 }
@@ -45,6 +48,7 @@ func ExampleDeleteURLsHandler() {
 	res, _ := ts.Client().Do(req)
 	defer res.Body.Close()
 	fmt.Println("Status Code:", res.StatusCode)
+	
 	// Output:
 	// Status Code: 202
 }
