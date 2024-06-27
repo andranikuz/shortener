@@ -11,7 +11,7 @@ import (
 	"github.com/andranikuz/shortener/internal/container"
 )
 
-func ExampleGenerateShortURLHandler() {
+func ExampleHTTPHandler_GenerateShortURLHandler() {
 	cnt, _ := container.NewContainer()
 	h := rest.NewHTTPHandler(cnt)
 	ts := httptest.NewServer(h.Router(context.Background()))
@@ -31,7 +31,7 @@ func ExampleGenerateShortURLHandler() {
 	// Status Code: 201
 }
 
-func ExampleGenerateShortUrlJSONHandler() {
+func ExampleHTTPHandler_GenerateShortUrlJSONHandler() {
 	cnt, _ := container.NewContainer()
 	h := rest.NewHTTPHandler(cnt)
 	ts := httptest.NewServer(h.Router(context.Background()))
@@ -41,6 +41,9 @@ func ExampleGenerateShortUrlJSONHandler() {
 		fmt.Println("Status Code:", 500)
 	}
 	res, err := ts.Client().Do(req)
+	if err != nil {
+		fmt.Println("Status Code:", 500)
+	}
 	defer res.Body.Close()
 	fmt.Println("Status Code:", res.StatusCode)
 
@@ -48,7 +51,7 @@ func ExampleGenerateShortUrlJSONHandler() {
 	// Status Code: 201
 }
 
-func ExampleDeleteURLsHandler() {
+func ExampleHTTPHandler_DeleteURLsHandler() {
 	cnt, _ := container.NewContainer()
 	h := rest.NewHTTPHandler(cnt)
 	ts := httptest.NewServer(h.Router(context.Background()))
