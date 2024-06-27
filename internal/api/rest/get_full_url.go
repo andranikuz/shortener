@@ -11,6 +11,7 @@ import (
 	"github.com/andranikuz/shortener/internal/models"
 )
 
+// GetFullURLHandler хендлер редиректа с сокращенного на полный URL.
 func (h HTTPHandler) GetFullURLHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
 	id := chi.URLParam(req, "id")
 	if id == "" {

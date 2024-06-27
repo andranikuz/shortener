@@ -6,6 +6,7 @@ import (
 	"github.com/andranikuz/shortener/internal/models"
 )
 
+// Storage интерфейс репозитория.
 type Storage interface {
 	Save(ctx context.Context, url models.URL) error
 	Get(ctx context.Context, fullURL string) (*models.URL, error)

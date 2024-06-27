@@ -10,6 +10,7 @@ import (
 	"github.com/andranikuz/shortener/internal/storage/postgres"
 )
 
+// PingHandler хендлер ping метода.
 func (h HTTPHandler) PingHandler(res http.ResponseWriter) {
 	if config.Config.DatabaseDSN == "" {
 		log.Info().Msg("database dsn is not init")

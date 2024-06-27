@@ -12,6 +12,7 @@ import (
 	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
+// GenerateShortURLHandler хендлер создания сокращенного URL.
 func (h HTTPHandler) GenerateShortURLHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
 		log.Info().Msg(err.Error())

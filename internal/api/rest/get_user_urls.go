@@ -10,11 +10,13 @@ import (
 	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
+// GetUserURLsHandlerItem структура одного URL в ответе.
 type GetUserURLsHandlerItem struct {
 	ShortURL    string `json:"short_url"`
 	OriginalURL string `json:"original_url"`
 }
 
+// GetUserURLsHandler хендлер получения списка пользователей.
 func (h HTTPHandler) GetUserURLsHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	userID, err := authorize.GetUserID(req)

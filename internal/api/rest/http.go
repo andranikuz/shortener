@@ -12,10 +12,12 @@ import (
 	"github.com/andranikuz/shortener/internal/services/shortener"
 )
 
+// HTTPHandler хендлер для обработки http запросов.
 type HTTPHandler struct {
 	shortener *shortener.Shortener
 }
 
+// NewHTTPHandler функция для инициализации NewHTTPHandler.
 func NewHTTPHandler(cnt *container.Container) HTTPHandler {
 	h := HTTPHandler{}
 	h.shortener, _ = cnt.Shortener()
@@ -23,6 +25,7 @@ func NewHTTPHandler(cnt *container.Container) HTTPHandler {
 	return h
 }
 
+// Router метод получения роутера. Используется библиотека chi.
 func (h HTTPHandler) Router(ctx context.Context) chi.Router {
 	r := chi.NewRouter()
 	r.Use(middlewares.RequestLogger)

@@ -11,8 +11,10 @@ import (
 	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
+// DeleteURLsHandlerRequest структура запроса.
 type DeleteURLsHandlerRequest []string
 
+// DeleteURLsHandler json хендлер удаления массива URLs.
 func (h HTTPHandler) DeleteURLsHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusAccepted)
 	userID, err := authorize.GetUserID(req)

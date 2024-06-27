@@ -16,6 +16,7 @@ type ShortenItem struct {
 	ShortURL      string `json:"short_url"`
 }
 
+// GenerateShortURLBatch метод создания массива сокращенных ссылок.
 func (s *Shortener) GenerateShortURLBatch(ctx context.Context, items []OriginalItem, userID string) ([]ShortenItem, error) {
 	var urls []models.URL
 	var result []ShortenItem
