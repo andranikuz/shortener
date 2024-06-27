@@ -20,7 +20,10 @@ func ExampleGenerateShortURLHandler() {
 	if err != nil {
 		fmt.Println("Status Code:", 500)
 	}
-	res, _ := ts.Client().Do(req)
+	res, err := ts.Client().Do(req)
+	if err != nil {
+		fmt.Println("Status Code:", 500)
+	}
 	defer res.Body.Close()
 	fmt.Println("Status Code:", res.StatusCode)
 
@@ -37,7 +40,7 @@ func ExampleGenerateShortUrlJSONHandler() {
 	if err != nil {
 		fmt.Println("Status Code:", 500)
 	}
-	res, _ := ts.Client().Do(req)
+	res, err := ts.Client().Do(req)
 	defer res.Body.Close()
 	fmt.Println("Status Code:", res.StatusCode)
 
@@ -54,7 +57,10 @@ func ExampleDeleteURLsHandler() {
 	if err != nil {
 		fmt.Println("Status Code:", 500)
 	}
-	res, _ := ts.Client().Do(req)
+	res, err := ts.Client().Do(req)
+	if err != nil {
+		fmt.Println("Status Code:", 500)
+	}
 	defer res.Body.Close()
 	fmt.Println("Status Code:", res.StatusCode)
 
