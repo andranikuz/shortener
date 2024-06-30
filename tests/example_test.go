@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -14,7 +13,7 @@ import (
 func ExampleHTTPHandler_GenerateShortURLHandler() {
 	cnt, _ := container.NewContainer()
 	h := rest.NewHTTPHandler(cnt)
-	ts := httptest.NewServer(h.Router(context.Background()))
+	ts := httptest.NewServer(h.Router())
 	reader := strings.NewReader("google.com")
 	req, err := http.NewRequest(http.MethodPost, ts.URL, reader)
 	if err != nil {
