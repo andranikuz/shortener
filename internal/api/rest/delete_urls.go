@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -15,6 +16,7 @@ type DeleteURLsHandlerRequest []string
 
 // DeleteURLsHandler json хендлер удаления массива URLs.
 func (h HTTPHandler) DeleteURLsHandler(res http.ResponseWriter, req *http.Request) {
+	ctx := context.Background()
 	res.WriteHeader(http.StatusAccepted)
 	userID, err := authorize.GetUserID(req)
 	if err != nil || userID == "" {
@@ -29,5 +31,5 @@ func (h HTTPHandler) DeleteURLsHandler(res http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	h.shortener.DeleteURLs(req.Context(), request, userID)
+	h.shortener.DeleteURLs(ctx, request, userID)
 }

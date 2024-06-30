@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -17,13 +18,14 @@ type GetUserURLsHandlerItem struct {
 
 // GetUserURLsHandler хендлер получения списка пользователей.
 func (h HTTPHandler) GetUserURLsHandler(res http.ResponseWriter, req *http.Request) {
+	ctx := context.Background()
 	res.Header().Set("Content-Type", "application/json")
 	userID, err := authorize.GetUserID(req)
 	if err != nil || userID == "" {
 		res.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	urls, err := h.shortener.GetUserURLs(req.Context(), userID)
+	urls, err := h.shortener.GetUserURLs(ctx, userID)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
 		return

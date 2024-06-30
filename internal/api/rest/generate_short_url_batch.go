@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -19,6 +20,7 @@ type GenerateShortURLBatchHandlerResponse []shortener.ShortenItem
 
 // GenerateShortURLBatchHandler json хендлер создания массива сокращенных URLs.
 func (h HTTPHandler) GenerateShortURLBatchHandler(res http.ResponseWriter, req *http.Request) {
+	ctx := context.Background()
 	res.Header().Set("Content-Type", "application/json")
 	if err := req.ParseForm(); err != nil {
 		log.Info().Msg(err.Error())
@@ -36,7 +38,7 @@ func (h HTTPHandler) GenerateShortURLBatchHandler(res http.ResponseWriter, req *
 		return
 	}
 	userID := authorize.GetOrGenerateUserID(res, req)
-	response, err := h.shortener.GenerateShortURLBatch(req.Context(), request, userID)
+	response, err := h.shortener.GenerateShortURLBatch(ctx, request, userID)
 	if err != nil {
 		log.Info().Msg(err.Error())
 		res.WriteHeader(http.StatusBadRequest)
