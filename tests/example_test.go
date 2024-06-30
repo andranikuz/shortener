@@ -34,7 +34,7 @@ func ExampleHTTPHandler_GenerateShortURLHandler() {
 func ExampleHTTPHandler_GenerateShortURLJSONHandler() {
 	cnt, _ := container.NewContainer()
 	h := rest.NewHTTPHandler(cnt)
-	ts := httptest.NewServer(h.Router(context.Background()))
+	ts := httptest.NewServer(h.Router())
 	reader := strings.NewReader("{\"url\": \"http://google.com\"}")
 	req, err := http.NewRequest(http.MethodPost, ts.URL, reader)
 	if err != nil {
@@ -54,7 +54,7 @@ func ExampleHTTPHandler_GenerateShortURLJSONHandler() {
 func ExampleHTTPHandler_DeleteURLsHandler() {
 	cnt, _ := container.NewContainer()
 	h := rest.NewHTTPHandler(cnt)
-	ts := httptest.NewServer(h.Router(context.Background()))
+	ts := httptest.NewServer(h.Router())
 	reader := strings.NewReader("[\"id\"]")
 	req, err := http.NewRequest(http.MethodDelete, ts.URL+"/api/user/urls", reader)
 	if err != nil {
