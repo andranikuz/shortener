@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"context"
 	"errors"
 	"io"
 	"net/http"
@@ -13,7 +12,7 @@ import (
 )
 
 // GenerateShortURLHandler хендлер создания сокращенного URL.
-func (h HTTPHandler) GenerateShortURLHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
+func (h HTTPHandler) GenerateShortURLHandler(res http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
 		log.Info().Msg(err.Error())
 		res.WriteHeader(http.StatusBadRequest)
@@ -27,7 +26,7 @@ func (h HTTPHandler) GenerateShortURLHandler(ctx context.Context, res http.Respo
 		return
 	}
 	code := http.StatusCreated
-	shortURL, err := h.shortener.GenerateShortURL(ctx, fullURL, userID)
+	shortURL, err := h.shortener.GenerateShortURL(req.Context(), fullURL, userID)
 	if err != nil {
 		if errors.Is(err, models.ErrURLAlreadyExists) {
 			code = http.StatusConflict
