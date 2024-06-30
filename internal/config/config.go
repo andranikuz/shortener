@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// AppConfig структура отвечает за конфигурацию приложения.
 type AppConfig struct {
 	isInit          bool
 	ServerAddress   string
@@ -13,8 +14,10 @@ type AppConfig struct {
 	DatabaseDSN     string
 }
 
+// Config публичная переменная, которой пользуются приложения дл получения параметров конфигурации приложения.
 var Config AppConfig
 
+// Init функция инициализирует конфигурацию приложения.
 func Init() {
 	if !Config.isInit {
 		flag.StringVar(&Config.ServerAddress, "a", "localhost:8080", "address and port to run server")

@@ -8,10 +8,12 @@ import (
 	"github.com/andranikuz/shortener/internal/models"
 )
 
+// FileStorage файловый репозиторий.
 type FileStorage struct {
 	filePath string
 }
 
+// NewFileStorage функция инициализации FileStorage.
 func NewFileStorage(path string) (*FileStorage, error) {
 	storage := FileStorage{path}
 	file, err := os.OpenFile(storage.filePath, os.O_RDWR|os.O_CREATE, 0666)
@@ -23,7 +25,7 @@ func NewFileStorage(path string) (*FileStorage, error) {
 	return &storage, nil
 }
 
-// Save url
+// Save метод сохранения URL.
 func (storage *FileStorage) Save(ctx context.Context, url models.URL) error {
 	data, err := json.Marshal(&url)
 	if err != nil {
@@ -40,7 +42,7 @@ func (storage *FileStorage) Save(ctx context.Context, url models.URL) error {
 	return nil
 }
 
-// Get url
+// Get метод получения URL по идентификатору.
 func (storage *FileStorage) Get(ctx context.Context, id string) (*models.URL, error) {
 	c, err := newConsumer(storage.filePath)
 	if err != nil {
@@ -61,7 +63,7 @@ func (storage *FileStorage) Get(ctx context.Context, id string) (*models.URL, er
 	return &url, err
 }
 
-// Get url by full_url
+// GetByFullURL метод получения URL по послной ссылке.
 func (storage *FileStorage) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
 	c, err := newConsumer(storage.filePath)
 	if err != nil {
@@ -82,7 +84,7 @@ func (storage *FileStorage) GetByFullURL(ctx context.Context, fullURL string) (*
 	return &url, err
 }
 
-// Save batch of urls
+// SaveBatch метод сохранения массива URL.
 func (storage *FileStorage) SaveBatch(ctx context.Context, urls []models.URL) error {
 	for _, url := range urls {
 		if err := storage.Save(ctx, url); err != nil {
@@ -93,6 +95,7 @@ func (storage *FileStorage) SaveBatch(ctx context.Context, urls []models.URL) er
 	return nil
 }
 
+// GetByUserID метод полуения списка URL по userID.
 func (storage *FileStorage) GetByUserID(ctx context.Context, userID string) ([]models.URL, error) {
 	c, err := newConsumer(storage.filePath)
 	if err != nil {
@@ -115,6 +118,7 @@ func (storage *FileStorage) GetByUserID(ctx context.Context, userID string) ([]m
 	return urls, err
 }
 
+// DeleteURLs метод удаления массива URLs.
 func (storage *FileStorage) DeleteURLs(ctx context.Context, ids []string, userID string) error {
 	return nil
 }

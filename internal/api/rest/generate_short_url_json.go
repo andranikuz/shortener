@@ -13,15 +13,19 @@ import (
 	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
+// GenerateShortURLJSONHandlerRequest структура запроса.
 type GenerateShortURLJSONHandlerRequest struct {
 	URL string `json:"url"`
 }
 
+// GenerateShortURLJSONHandlerResponse структура ответа.
 type GenerateShortURLJSONHandlerResponse struct {
 	Result string `json:"result"`
 }
 
-func (h HTTPHandler) GenerateShortURLJSONHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
+// GenerateShortURLJSONHandler json хендлер создания сокращенного URL.
+func (h HTTPHandler) GenerateShortURLJSONHandler(res http.ResponseWriter, req *http.Request) {
+	ctx := context.Background()
 	res.Header().Set("Content-Type", "application/json")
 	if err := req.ParseForm(); err != nil {
 		log.Info().Msg(err.Error())

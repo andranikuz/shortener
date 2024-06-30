@@ -12,11 +12,15 @@ import (
 	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
+// GenerateShortURLBatchHandlerRequest структура запроса.
 type GenerateShortURLBatchHandlerRequest []shortener.OriginalItem
 
+// GenerateShortURLBatchHandlerResponse структура ответа.
 type GenerateShortURLBatchHandlerResponse []shortener.ShortenItem
 
-func (h HTTPHandler) GenerateShortURLBatchHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
+// GenerateShortURLBatchHandler json хендлер создания массива сокращенных URLs.
+func (h HTTPHandler) GenerateShortURLBatchHandler(res http.ResponseWriter, req *http.Request) {
+	ctx := context.Background()
 	res.Header().Set("Content-Type", "application/json")
 	if err := req.ParseForm(); err != nil {
 		log.Info().Msg(err.Error())
