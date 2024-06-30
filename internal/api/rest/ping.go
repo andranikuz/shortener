@@ -21,7 +21,7 @@ func (h HTTPHandler) PingHandler(res http.ResponseWriter) {
 			return
 		}
 	default:
-		log.Info().Msg(fmt.Sprintf("storage is not PgSQL"))
+		log.Info().Msg("storage is not PgSQL")
 		res.WriteHeader(http.StatusInternalServerError)
 		return
 	}
