@@ -6,16 +6,19 @@ import (
 	"github.com/andranikuz/shortener/internal/models"
 )
 
+// OriginalItem структура оригинального URL.
 type OriginalItem struct {
 	CorrelationID string `json:"correlation_id"`
 	OriginalURL   string `json:"original_url"`
 }
 
+// ShortenItem структура сокращенного URL.
 type ShortenItem struct {
 	CorrelationID string `json:"correlation_id"`
 	ShortURL      string `json:"short_url"`
 }
 
+// GenerateShortURLBatch метод создания массива сокращенных ссылок.
 func (s *Shortener) GenerateShortURLBatch(ctx context.Context, items []OriginalItem, userID string) ([]ShortenItem, error) {
 	var urls []models.URL
 	var result []ShortenItem
