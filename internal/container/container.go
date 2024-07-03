@@ -2,6 +2,7 @@ package container
 
 import (
 	"github.com/andranikuz/shortener/internal/config"
+	"github.com/andranikuz/shortener/internal/services"
 	"github.com/andranikuz/shortener/internal/services/shortener"
 	"github.com/andranikuz/shortener/internal/storage"
 	"github.com/andranikuz/shortener/internal/storage/file"
@@ -12,7 +13,7 @@ import (
 // Container структура отвечает за контейнеризацию сервисов и репозиториев приложения.
 type Container struct {
 	storage   storage.Storage
-	shortener *shortener.Shortener
+	shortener services.Shortener
 }
 
 // NewContainer создает новый контейнер.
@@ -60,7 +61,7 @@ func (c Container) Storage() (storage.Storage, error) {
 }
 
 // Shortener возвращает сервис Shortener.
-func (c Container) Shortener() (*shortener.Shortener, error) {
+func (c Container) Shortener() (services.Shortener, error) {
 	if c.shortener == nil {
 		var err error
 		storage, err := c.Storage()

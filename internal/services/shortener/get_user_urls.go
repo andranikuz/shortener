@@ -9,7 +9,7 @@ import (
 )
 
 // GetUserURLs метод получения URLs пользователя.
-func (s *Shortener) GetUserURLs(ctx context.Context, userID string) ([]models.URL, error) {
+func (s Shortener) GetUserURLs(ctx context.Context, userID string) ([]models.URL, error) {
 	urls, err := s.storage.GetByUserID(ctx, userID)
 	if err != nil {
 		log.Info().Msg(err.Error())

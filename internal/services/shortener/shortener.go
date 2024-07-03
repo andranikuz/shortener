@@ -10,6 +10,6 @@ type Shortener struct {
 }
 
 // NewShortener функция для инициализации Shortener.
-func NewShortener(storage storage.Storage) *Shortener {
-	return &Shortener{storage: storage}
+func NewShortener(storage storage.Storage) Shortener {
+	return Shortener{storage: storage}
 }

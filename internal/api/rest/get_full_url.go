@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"context"
 	"errors"
 	"net/http"
 
@@ -13,14 +12,13 @@ import (
 
 // GetFullURLHandler хендлер редиректа с сокращенного на полный URL.
 func (h HTTPHandler) GetFullURLHandler(res http.ResponseWriter, req *http.Request) {
-	ctx := context.Background()
 	id := chi.URLParam(req, "id")
 	if id == "" {
 		log.Info().Msg("empty id")
 		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fullURL, err := h.shortener.GetFullURL(ctx, id)
+	fullURL, err := h.shortener.GetFullURL(req.Context(), id)
 	if err != nil {
 		if errors.Is(err, models.ErrURLDeleted) {
 			log.Info().Msg(err.Error())

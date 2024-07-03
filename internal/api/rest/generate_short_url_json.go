@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -25,7 +24,6 @@ type GenerateShortURLJSONHandlerResponse struct {
 
 // GenerateShortURLJSONHandler json хендлер создания сокращенного URL.
 func (h HTTPHandler) GenerateShortURLJSONHandler(res http.ResponseWriter, req *http.Request) {
-	ctx := context.Background()
 	res.Header().Set("Content-Type", "application/json")
 	if err := req.ParseForm(); err != nil {
 		log.Info().Msg(err.Error())
@@ -41,7 +39,7 @@ func (h HTTPHandler) GenerateShortURLJSONHandler(res http.ResponseWriter, req *h
 	}
 	code := http.StatusCreated
 	userID := authorize.GetOrGenerateUserID(res, req)
-	shortURL, err := h.shortener.GenerateShortURL(ctx, request.URL, userID)
+	shortURL, err := h.shortener.GenerateShortURL(req.Context(), request.URL, userID)
 	if err != nil {
 		if errors.Is(err, models.ErrURLAlreadyExists) {
 			code = http.StatusConflict

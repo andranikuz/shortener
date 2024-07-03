@@ -155,3 +155,8 @@ func (storage *PostgresStorage) DeleteURLs(ctx context.Context, ids []string, us
 
 	return tx.Commit()
 }
+
+// Ping метод проверки статуса соединения.
+func (storage PostgresStorage) Ping() error {
+	return storage.DB.Ping()
+}

@@ -8,13 +8,13 @@ import (
 
 	"github.com/andranikuz/shortener/internal/api/rest/middlewares"
 	"github.com/andranikuz/shortener/internal/container"
-	"github.com/andranikuz/shortener/internal/services/shortener"
+	"github.com/andranikuz/shortener/internal/services"
 	"github.com/andranikuz/shortener/internal/storage"
 )
 
 // HTTPHandler хендлер для обработки http запросов.
 type HTTPHandler struct {
-	shortener *shortener.Shortener
+	shortener services.Shortener
 	storage   storage.Storage
 }
 

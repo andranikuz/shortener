@@ -122,3 +122,8 @@ func (storage *FileStorage) GetByUserID(ctx context.Context, userID string) ([]m
 func (storage *FileStorage) DeleteURLs(ctx context.Context, ids []string, userID string) error {
 	return nil
 }
+
+// Ping метод проверки статуса соединения.
+func (storage FileStorage) Ping() error {
+	return nil
+}

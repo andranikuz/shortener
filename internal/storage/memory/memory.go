@@ -130,3 +130,8 @@ func (storage *MemoryStorage) GetByUserID(ctx context.Context, userID string) ([
 func (storage *MemoryStorage) DeleteURLs(ctx context.Context, ids []string, userID string) error {
 	return nil
 }
+
+// Ping метод проверки статуса соединения.
+func (storage MemoryStorage) Ping() error {
+	return nil
+}

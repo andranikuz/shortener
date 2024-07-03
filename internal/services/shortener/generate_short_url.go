@@ -12,7 +12,7 @@ import (
 )
 
 // GenerateShortURL метод создания сокращенной ссылки.
-func (s *Shortener) GenerateShortURL(ctx context.Context, fullURL string, userID string) (string, error) {
+func (s Shortener) GenerateShortURL(ctx context.Context, fullURL string, userID string) (string, error) {
 	id, _ := uuid.GenerateUUID()
 	url := models.URL{ID: id, FullURL: fullURL, UserID: userID}
 	if s.storage == nil {
