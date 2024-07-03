@@ -29,5 +29,5 @@ func (h HTTPHandler) DeleteURLsHandler(res http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	h.shortener.DeleteURLs(req.Context(), request, userID)
+	h.shortener.DeleteURLs(request, userID)
 }

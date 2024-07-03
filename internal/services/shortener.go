@@ -8,7 +8,7 @@ import (
 
 // Storage интерфейс репозитория.
 type Shortener interface {
-	DeleteURLs(ctx context.Context, ids []string, userID string)
+	DeleteURLs(ids []string, userID string)
 	GenerateShortURL(ctx context.Context, fullURL string, userID string) (string, error)
 	GenerateShortURLBatch(ctx context.Context, items []OriginalItem, userID string) ([]ShortenItem, error)
 	GetFullURL(ctx context.Context, id string) (string, error)
