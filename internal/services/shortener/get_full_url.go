@@ -8,7 +8,8 @@ import (
 	"github.com/andranikuz/shortener/internal/models"
 )
 
-func (s *Shortener) GetFullURL(ctx context.Context, id string) (string, error) {
+// GetFullURL метод получения полного URL.
+func (s Shortener) GetFullURL(ctx context.Context, id string) (string, error) {
 	url, err := s.storage.Get(ctx, id)
 	if err != nil {
 		log.Info().Msg(err.Error())

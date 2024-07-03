@@ -8,10 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/andranikuz/shortener/internal/models"
+	"github.com/andranikuz/shortener/internal/services"
 	"github.com/andranikuz/shortener/internal/storage/memory"
 )
 
-func getShortener() *Shortener {
+func getShortener() Shortener {
 	storage, _ := memory.NewMemoryStorage()
 	s := NewShortener(storage)
 
@@ -100,7 +101,7 @@ func BenchmarkDeleteURLs(b *testing.B) {
 	var ids []string
 	ids = append(ids, "id")
 	for i := 0; i < b.N; i++ {
-		s.DeleteURLs(context.Background(), ids, userID)
+		s.DeleteURLs(ids, userID)
 	}
 }
 
@@ -120,13 +121,13 @@ func BenchmarkGetUserURLs(b *testing.B) {
 func BenchmarkGenerateShortURLBatch(b *testing.B) {
 	s := getShortener()
 	userID := "userId"
-	var items []OriginalItem
+	var items []services.OriginalItem
 	items = append(items,
-		OriginalItem{
+		services.OriginalItem{
 			CorrelationID: "id",
 			OriginalURL:   "url",
 		},
-		OriginalItem{
+		services.OriginalItem{
 			CorrelationID: "id1",
 			OriginalURL:   "url2",
 		},

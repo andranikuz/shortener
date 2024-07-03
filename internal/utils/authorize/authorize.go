@@ -6,6 +6,8 @@ import (
 	"github.com/hashicorp/go-uuid"
 )
 
+// GetOrGenerateUserID функция получения или создания идентификатора пользователя. После генерации
+// идентификатор помещается в куку Authorize и используется для авторизации
 func GetOrGenerateUserID(res http.ResponseWriter, req *http.Request) string {
 	cookie, err := req.Cookie("Authorize")
 	if err != nil || cookie.Value == "" {
@@ -17,6 +19,7 @@ func GetOrGenerateUserID(res http.ResponseWriter, req *http.Request) string {
 	return cookie.Value
 }
 
+// GetUserID функция получения пользователя из куки Authorize
 func GetUserID(req *http.Request) (string, error) {
 	cookie, err := req.Cookie("Authorize")
 	if err != nil || cookie.Value == "" {

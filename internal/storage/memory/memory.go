@@ -9,10 +9,12 @@ import (
 	"github.com/andranikuz/shortener/internal/models"
 )
 
+// MemoryStorage репозиторий в памяти.
 type MemoryStorage struct {
 	memory *memdb.MemDB
 }
 
+// NewMemoryStorage функция инициализации MemoryStorage.
 func NewMemoryStorage() (*MemoryStorage, error) {
 	db := MemoryStorage{}
 	schema := &memdb.DBSchema{
@@ -49,7 +51,7 @@ func NewMemoryStorage() (*MemoryStorage, error) {
 	return &db, nil
 }
 
-// Save url
+// Save метод сохранения URL.
 func (storage *MemoryStorage) Save(ctx context.Context, url models.URL) error {
 	txn := storage.memory.Txn(true)
 	defer txn.Abort()
@@ -62,7 +64,7 @@ func (storage *MemoryStorage) Save(ctx context.Context, url models.URL) error {
 	return nil
 }
 
-// Get url
+// Get метод получения URL по идентификатору.
 func (storage *MemoryStorage) Get(ctx context.Context, id string) (*models.URL, error) {
 	txn := storage.memory.Txn(false)
 	defer txn.Abort()
@@ -79,7 +81,7 @@ func (storage *MemoryStorage) Get(ctx context.Context, id string) (*models.URL, 
 	return &url, nil
 }
 
-// Get url by full_url
+// GetByFullURL метод получения URL по послной ссылке.
 func (storage *MemoryStorage) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
 	txn := storage.memory.Txn(false)
 	defer txn.Abort()
@@ -96,7 +98,7 @@ func (storage *MemoryStorage) GetByFullURL(ctx context.Context, fullURL string) 
 	return &url, nil
 }
 
-// Save batch of urls
+// SaveBatch метод сохранения массива URL.
 func (storage *MemoryStorage) SaveBatch(ctx context.Context, urls []models.URL) error {
 	for _, url := range urls {
 		if err := storage.Save(ctx, url); err != nil {
@@ -107,6 +109,7 @@ func (storage *MemoryStorage) SaveBatch(ctx context.Context, urls []models.URL) 
 	return nil
 }
 
+// GetByUserID метод полуения списка URL по userID.
 func (storage *MemoryStorage) GetByUserID(ctx context.Context, userID string) ([]models.URL, error) {
 	txn := storage.memory.Txn(false)
 	defer txn.Abort()
@@ -123,6 +126,12 @@ func (storage *MemoryStorage) GetByUserID(ctx context.Context, userID string) ([
 	return urls, nil
 }
 
+// DeleteURLs метод удаления массива URLs.
 func (storage *MemoryStorage) DeleteURLs(ctx context.Context, ids []string, userID string) error {
+	return nil
+}
+
+// Ping метод проверки статуса соединения.
+func (storage MemoryStorage) Ping() error {
 	return nil
 }

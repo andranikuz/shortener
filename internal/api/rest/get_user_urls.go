@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 
@@ -10,19 +9,21 @@ import (
 	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
+// GetUserURLsHandlerItem структура одного URL в ответе.
 type GetUserURLsHandlerItem struct {
 	ShortURL    string `json:"short_url"`
 	OriginalURL string `json:"original_url"`
 }
 
-func (h HTTPHandler) GetUserURLsHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
+// GetUserURLsHandler хендлер получения списка пользователей.
+func (h HTTPHandler) GetUserURLsHandler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	userID, err := authorize.GetUserID(req)
 	if err != nil || userID == "" {
 		res.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	urls, err := h.shortener.GetUserURLs(ctx, userID)
+	urls, err := h.shortener.GetUserURLs(req.Context(), userID)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
 		return

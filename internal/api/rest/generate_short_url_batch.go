@@ -1,22 +1,24 @@
 package rest
 
 import (
-	"context"
 	"encoding/json"
 	"io"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/andranikuz/shortener/internal/services/shortener"
+	"github.com/andranikuz/shortener/internal/services"
 	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
-type GenerateShortURLBatchHandlerRequest []shortener.OriginalItem
+// GenerateShortURLBatchHandlerRequest структура запроса.
+type GenerateShortURLBatchHandlerRequest []services.OriginalItem
 
-type GenerateShortURLBatchHandlerResponse []shortener.ShortenItem
+// GenerateShortURLBatchHandlerResponse структура ответа.
+type GenerateShortURLBatchHandlerResponse []services.ShortenItem
 
-func (h HTTPHandler) GenerateShortURLBatchHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
+// GenerateShortURLBatchHandler json хендлер создания массива сокращенных URLs.
+func (h HTTPHandler) GenerateShortURLBatchHandler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	if err := req.ParseForm(); err != nil {
 		log.Info().Msg(err.Error())
@@ -34,7 +36,7 @@ func (h HTTPHandler) GenerateShortURLBatchHandler(ctx context.Context, res http.
 		return
 	}
 	userID := authorize.GetOrGenerateUserID(res, req)
-	response, err := h.shortener.GenerateShortURLBatch(ctx, request, userID)
+	response, err := h.shortener.GenerateShortURLBatch(req.Context(), request, userID)
 	if err != nil {
 		log.Info().Msg(err.Error())
 		res.WriteHeader(http.StatusBadRequest)

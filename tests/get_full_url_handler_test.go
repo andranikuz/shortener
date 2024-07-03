@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -18,7 +17,7 @@ func noRedirect(req *http.Request, via []*http.Request) error {
 
 func TestGetFullURLHandler(t *testing.T) {
 	h := getHTTPHandler(t)
-	ts := httptest.NewServer(h.Router(context.Background()))
+	ts := httptest.NewServer(h.Router())
 	defer ts.Close()
 	type want struct {
 		code     int

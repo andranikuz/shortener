@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -16,7 +15,7 @@ import (
 
 func TestGetShortenByFullUrlJSONHandler(t *testing.T) {
 	h := getHTTPHandler(t)
-	ts := httptest.NewServer(h.Router(context.Background()))
+	ts := httptest.NewServer(h.Router())
 	type args struct {
 		body    string
 		request string
