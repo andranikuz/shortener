@@ -15,7 +15,10 @@ func (s Shortener) GenerateShortURLBatch(ctx context.Context, items []services.O
 	for _, item := range items {
 		url = models.URL{ID: item.CorrelationID, FullURL: item.OriginalURL, UserID: userID}
 		urls = append(urls, url)
-		result = append(result, services.ShortenItem{item.CorrelationID, url.GetShorter()})
+		result = append(result, services.ShortenItem{
+			CorrelationID: item.CorrelationID,
+			ShortURL:      url.GetShorter(),
+		})
 	}
 
 	if err := s.storage.SaveBatch(ctx, urls); err != nil {
