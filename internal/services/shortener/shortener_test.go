@@ -101,7 +101,7 @@ func BenchmarkDeleteURLs(b *testing.B) {
 	var ids []string
 	ids = append(ids, "id")
 	for i := 0; i < b.N; i++ {
-		s.DeleteURLs(context.Background(), ids, userID)
+		s.DeleteURLs(ids, userID)
 	}
 }
 
