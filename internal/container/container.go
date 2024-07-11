@@ -2,6 +2,7 @@ package container
 
 import (
 	"github.com/andranikuz/shortener/internal/config"
+	"github.com/andranikuz/shortener/internal/services"
 	"github.com/andranikuz/shortener/internal/services/shortener"
 	"github.com/andranikuz/shortener/internal/storage"
 	"github.com/andranikuz/shortener/internal/storage/file"
@@ -9,11 +10,13 @@ import (
 	"github.com/andranikuz/shortener/internal/storage/postgres"
 )
 
+// Container структура отвечает за контейнеризацию сервисов и репозиториев приложения.
 type Container struct {
 	storage   storage.Storage
-	shortener *shortener.Shortener
+	shortener services.Shortener
 }
 
+// NewContainer создает новый контейнер.
 func NewContainer() (*Container, error) {
 	var err error
 	var cnt Container
@@ -29,6 +32,7 @@ func NewContainer() (*Container, error) {
 	return &cnt, nil
 }
 
+// Storage возвращает storage.Storage.
 func (c Container) Storage() (storage.Storage, error) {
 	if c.storage == nil {
 		if config.Config.DatabaseDSN != "" {
@@ -56,7 +60,8 @@ func (c Container) Storage() (storage.Storage, error) {
 	return c.storage, nil
 }
 
-func (c Container) Shortener() (*shortener.Shortener, error) {
+// Shortener возвращает сервис Shortener.
+func (c Container) Shortener() (services.Shortener, error) {
 	if c.shortener == nil {
 		var err error
 		storage, err := c.Storage()

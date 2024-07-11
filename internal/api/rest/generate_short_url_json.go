@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -13,15 +12,18 @@ import (
 	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
+// GenerateShortURLJSONHandlerRequest структура запроса.
 type GenerateShortURLJSONHandlerRequest struct {
 	URL string `json:"url"`
 }
 
+// GenerateShortURLJSONHandlerResponse структура ответа.
 type GenerateShortURLJSONHandlerResponse struct {
 	Result string `json:"result"`
 }
 
-func (h HTTPHandler) GenerateShortURLJSONHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
+// GenerateShortURLJSONHandler json хендлер создания сокращенного URL.
+func (h HTTPHandler) GenerateShortURLJSONHandler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	if err := req.ParseForm(); err != nil {
 		log.Info().Msg(err.Error())
@@ -37,7 +39,7 @@ func (h HTTPHandler) GenerateShortURLJSONHandler(ctx context.Context, res http.R
 	}
 	code := http.StatusCreated
 	userID := authorize.GetOrGenerateUserID(res, req)
-	shortURL, err := h.shortener.GenerateShortURL(ctx, request.URL, userID)
+	shortURL, err := h.shortener.GenerateShortURL(req.Context(), request.URL, userID)
 	if err != nil {
 		if errors.Is(err, models.ErrURLAlreadyExists) {
 			code = http.StatusConflict

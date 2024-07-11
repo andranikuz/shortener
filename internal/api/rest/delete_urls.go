@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -11,9 +10,11 @@ import (
 	"github.com/andranikuz/shortener/internal/utils/authorize"
 )
 
+// DeleteURLsHandlerRequest структура запроса.
 type DeleteURLsHandlerRequest []string
 
-func (h HTTPHandler) DeleteURLsHandler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
+// DeleteURLsHandler json хендлер удаления массива URLs.
+func (h HTTPHandler) DeleteURLsHandler(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusAccepted)
 	userID, err := authorize.GetUserID(req)
 	if err != nil || userID == "" {
@@ -28,5 +29,5 @@ func (h HTTPHandler) DeleteURLsHandler(ctx context.Context, res http.ResponseWri
 		return
 	}
 
-	h.shortener.DeleteURLs(ctx, request, userID)
+	h.shortener.DeleteURLs(request, userID)
 }

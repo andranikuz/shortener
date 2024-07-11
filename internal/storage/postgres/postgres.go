@@ -10,10 +10,12 @@ import (
 	"github.com/andranikuz/shortener/internal/models"
 )
 
+// PostgresStorage Postgres репозиторий.
 type PostgresStorage struct {
 	DB *sql.DB
 }
 
+// NewPostgresStorage функция инициализации PostgresStorage.
 func NewPostgresStorage(dsn string) (*PostgresStorage, error) {
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
@@ -27,6 +29,7 @@ func NewPostgresStorage(dsn string) (*PostgresStorage, error) {
 	return &postgresDB, nil
 }
 
+// Migrate метод для создания таблицы url в БД.
 func (storage *PostgresStorage) Migrate() error {
 	if _, err := storage.DB.Exec(`
 		CREATE TABLE IF NOT EXISTS public.url (
@@ -43,7 +46,7 @@ func (storage *PostgresStorage) Migrate() error {
 	return nil
 }
 
-// Save url
+// Save метод сохранения URL.
 func (storage *PostgresStorage) Save(ctx context.Context, url models.URL) error {
 	if _, err := storage.DB.ExecContext(ctx, `
 			INSERT INTO url (id, full_url, user_id, is_deleted)
@@ -55,7 +58,7 @@ func (storage *PostgresStorage) Save(ctx context.Context, url models.URL) error 
 	return nil
 }
 
-// Get url
+// Get метод получения URL по идентификатору.
 func (storage *PostgresStorage) Get(ctx context.Context, id string) (*models.URL, error) {
 	row := storage.DB.QueryRowContext(ctx, `SELECT id, full_url, is_deleted FROM url where id = $1`, id)
 	var url models.URL
@@ -67,7 +70,7 @@ func (storage *PostgresStorage) Get(ctx context.Context, id string) (*models.URL
 	return &url, nil
 }
 
-// Get url by full_url
+// GetByFullURL метод получения URL по послной ссылке.
 func (storage *PostgresStorage) GetByFullURL(ctx context.Context, fullURL string) (*models.URL, error) {
 	row := storage.DB.QueryRowContext(ctx, `SELECT id, full_url, is_deleted FROM url where full_url = $1`, fullURL)
 	var url models.URL
@@ -79,7 +82,7 @@ func (storage *PostgresStorage) GetByFullURL(ctx context.Context, fullURL string
 	return &url, nil
 }
 
-// Save batch of urls
+// SaveBatch метод сохранения массива URL.
 func (storage *PostgresStorage) SaveBatch(ctx context.Context, urls []models.URL) error {
 	tx, err := storage.DB.Begin()
 	if err != nil {
@@ -103,6 +106,7 @@ func (storage *PostgresStorage) SaveBatch(ctx context.Context, urls []models.URL
 	return tx.Commit()
 }
 
+// GetByUserID метод полуения списка URL по userID.
 func (storage *PostgresStorage) GetByUserID(ctx context.Context, userID string) ([]models.URL, error) {
 	var urls []models.URL
 	rows, err := storage.DB.QueryContext(ctx, `SELECT id, full_url, is_deleted FROM url WHERE user_id = $1`, userID)
@@ -123,6 +127,7 @@ func (storage *PostgresStorage) GetByUserID(ctx context.Context, userID string) 
 	return urls, nil
 }
 
+// DeleteURLs метод удаления массива URLs.
 func (storage *PostgresStorage) DeleteURLs(ctx context.Context, ids []string, userID string) error {
 	tx, err := storage.DB.Begin()
 	if err != nil {
@@ -149,4 +154,9 @@ func (storage *PostgresStorage) DeleteURLs(ctx context.Context, ids []string, us
 	}
 
 	return tx.Commit()
+}
+
+// Ping метод проверки статуса соединения.
+func (storage PostgresStorage) Ping() error {
+	return storage.DB.Ping()
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 )
 
-func (s *Shortener) DeleteURLs(ctx context.Context, ids []string, userID string) {
-	go s.storage.DeleteURLs(ctx, ids, userID)
+// DeleteURLs метод удаления массива URLs.
+func (s Shortener) DeleteURLs(ids []string, userID string) {
+	go s.storage.DeleteURLs(context.Background(), ids, userID)
 }
