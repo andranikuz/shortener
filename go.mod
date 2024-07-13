@@ -1,6 +1,8 @@
 module github.com/andranikuz/shortener
 
-go 1.20
+go 1.21
+
+toolchain go1.22.4
 
 require (
 	github.com/go-chi/chi/v5 v5.0.12
@@ -9,8 +11,9 @@ require (
 	github.com/jackc/pgerrcode v0.0.0-20240316143900-6e2875d9b438
 	github.com/jackc/pgx/v5 v5.5.5
 	github.com/rs/zerolog v1.32.0
-	github.com/speps/go-hashids/v2 v2.0.1
 	github.com/stretchr/testify v1.9.0
+	golang.org/x/tools v0.23.0
+	honnef.co/go/tools v0.4.7
 )
 
 require (
@@ -25,12 +28,11 @@ require (
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
-	github.com/yuin/goldmark v1.4.13 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/mod v0.18.0 // indirect
+	golang.org/x/exp/typeparams v0.0.0-20221208152030-732eee02a75a // indirect
+	golang.org/x/mod v0.19.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.21.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	golang.org/x/tools v0.22.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
