@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/andranikuz/shortener/internal/api/rest"
 	"github.com/andranikuz/shortener/internal/config"
@@ -30,5 +31,12 @@ func NewApplication() (*Application, error) {
 // Run запускет http сервер.
 func (a *Application) Run() error {
 	httpHandler := rest.NewHTTPHandler(a.cnt)
-	return http.ListenAndServe(config.Config.ServerAddress, httpHandler.Router())
+	if config.Config.EnableHTTPS {
+		pwd, _ := os.Getwd()
+		path := pwd + `/internal/config/crt/`
+
+		return http.ListenAndServeTLS(config.Config.ServerAddress, path+"server.crt", path+"server.key", httpHandler.Router())
+	} else {
+		return http.ListenAndServe(config.Config.ServerAddress, httpHandler.Router())
+	}
 }
