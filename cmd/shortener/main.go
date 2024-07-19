@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/rs/zerolog/log"
 
 	"github.com/andranikuz/shortener/internal/app"
@@ -17,14 +15,12 @@ var (
 func main() {
 	a, err := app.NewApplication()
 	if err != nil {
-		log.Error().Msg(err.Error())
-		panic(err)
+		log.Fatal().Msg(err.Error())
 	}
-	fmt.Printf("Build version: %s\n", buildVersion)
-	fmt.Printf("Build date: %s\n", buildDate)
-	fmt.Printf("Build commit: %s\n", buildCommit)
+	log.Info().Msg("Build version: " + buildVersion)
+	log.Info().Msg("Build date: " + buildDate)
+	log.Info().Msg("Build commit: " + buildCommit)
 	if err := a.Run(); err != nil {
-		log.Error().Msg(err.Error())
-		panic(err)
+		log.Fatal().Msg(err.Error())
 	}
 }

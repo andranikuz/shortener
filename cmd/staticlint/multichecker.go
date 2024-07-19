@@ -17,11 +17,11 @@ import (
 )
 
 func main() {
-	var myChecks []*analysis.Analyzer
+	var customAnalyzers []*analysis.Analyzer
 	for _, v := range staticcheck.Analyzers {
-		myChecks = append(myChecks, v.Analyzer)
+		customAnalyzers = append(customAnalyzers, v.Analyzer)
 	}
-	myChecks = append(myChecks,
+	customAnalyzers = append(customAnalyzers,
 		copylock.Analyzer,
 		loopclosure.Analyzer,
 		lostcancel.Analyzer,
@@ -33,7 +33,7 @@ func main() {
 		buildssa.Analyzer,
 	)
 	multichecker.Main(
-		myChecks...,
+		customAnalyzers...,
 	)
 }
 
@@ -45,22 +45,34 @@ var exitCheckAnalyzer = &analysis.Analyzer{
 
 func run(pass *analysis.Pass) (interface{}, error) {
 	for _, file := range pass.Files {
-		if file.Name.Name == "main" {
-			for _, decl := range file.Decls {
-				if funcDecl, ok := decl.(*ast.FuncDecl); ok && funcDecl.Name.Name == "main" {
-					ast.Inspect(funcDecl.Body, func(n ast.Node) bool {
-						if callExpr, ok := n.(*ast.CallExpr); ok {
-							if fun, ok := callExpr.Fun.(*ast.SelectorExpr); ok {
-								if pkg, ok := fun.X.(*ast.Ident); ok && pkg.Name == "os" && fun.Sel.Name == "Exit" {
-									pass.Reportf(callExpr.Pos(), "direct call to os.Exit in main function is prohibited")
-								}
-							}
-						}
-						return true
-					})
-				}
+		checkMainPackage(pass, file)
+	}
+	return nil, nil
+}
+
+func checkMainPackage(pass *analysis.Pass, file *ast.File) {
+	if file.Name.Name == "main" {
+		checkMainFunction(pass, file)
+	}
+}
+
+func checkMainFunction(pass *analysis.Pass, file *ast.File) {
+	for _, decl := range file.Decls {
+		if funcDecl, ok := decl.(*ast.FuncDecl); ok && funcDecl.Name.Name == "main" {
+			ast.Inspect(funcDecl.Body, func(n ast.Node) bool {
+				return checkOsExit(pass, n)
+			})
+		}
+	}
+}
+
+func checkOsExit(pass *analysis.Pass, n ast.Node) bool {
+	if callExpr, ok := n.(*ast.CallExpr); ok {
+		if fun, ok := callExpr.Fun.(*ast.SelectorExpr); ok {
+			if pkg, ok := fun.X.(*ast.Ident); ok && pkg.Name == "os" && fun.Sel.Name == "Exit" {
+				pass.Reportf(callExpr.Pos(), "direct call to os.Exit in main function is prohibited")
 			}
 		}
 	}
-	return nil, nil
+	return true
 }
