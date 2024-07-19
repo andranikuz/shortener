@@ -16,7 +16,9 @@ type Application struct {
 
 // NewApplication создает новое приложение.
 func NewApplication() (*Application, error) {
-	config.Init()
+	if err := config.Init(); err != nil {
+		return nil, err
+	}
 	cnt, err := container.NewContainer()
 	if err != nil {
 		return nil, err
