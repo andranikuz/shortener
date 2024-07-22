@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	"github.com/rs/zerolog/log"
 	"net/http"
 	"os"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/andranikuz/shortener/internal/api/rest"
 	"github.com/andranikuz/shortener/internal/config"
