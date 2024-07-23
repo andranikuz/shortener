@@ -55,5 +55,10 @@ func (a *Application) Run() error {
 // ShutdownServer завершает работу HTTP сервера
 func (a *Application) ShutdownServer(ctx context.Context) error {
 	log.Info().Msg("Shutting down server...")
-	return a.server.Shutdown(ctx)
+	err := a.server.Shutdown(ctx)
+	if err != nil {
+		return err
+	}
+	log.Info().Msg("Server stopped gracefully")
+	return nil
 }
