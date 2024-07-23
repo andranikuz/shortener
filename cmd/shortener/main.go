@@ -60,4 +60,5 @@ func main() {
 
 	<-shutdownChan
 	log.Info().Msg("Server gracefully stopped")
+	os.Exit(0)
 }
