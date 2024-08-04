@@ -48,10 +48,3 @@ func (a *Application) Run() error {
 		return a.server.ListenAndServe()
 	}
 }
-
-// Stop останавливает работу HTTP сервера
-func (a *Application) Stop() {
-	if a.server != nil {
-		a.server.Close()
-	}
-}
