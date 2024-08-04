@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/rs/zerolog/log"
 
@@ -46,12 +45,8 @@ func main() {
 		sig := <-sigChan
 		log.Info().Msgf("Received signal: %s", sig)
 
-		// Контекст с таймаутом для завершения активных запросов
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer cancel()
-
 		// Завершение сервера
-		if err := a.ShutdownServer(ctx); err != nil {
+		if err := a.ShutdownServer(context.Background()); err != nil {
 			log.Info().Msgf("Server forced to shutdown: %v", err)
 		}
 
