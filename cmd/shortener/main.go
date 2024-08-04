@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -46,9 +45,7 @@ func main() {
 		log.Info().Msgf("Received signal: %s", sig)
 
 		// Завершение сервера
-		if err := a.ShutdownServer(context.Background()); err != nil {
-			log.Info().Msgf("Server forced to shutdown: %v", err)
-		}
+		a.Stop()
 
 		close(shutdownChan)
 	}()
