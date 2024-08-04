@@ -3,7 +3,6 @@ package app
 import (
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/andranikuz/shortener/internal/api/rest"
 	"github.com/andranikuz/shortener/internal/config"
@@ -55,7 +54,4 @@ func (a *Application) Stop() {
 	if a.server != nil {
 		a.server.Close()
 	}
-
-	// Сохранение данных, завершение активных запросов и т.д.
-	time.Sleep(1 * time.Second) // Имитируем некоторое время для завершения активных запросов
 }
