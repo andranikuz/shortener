@@ -29,27 +29,20 @@ func main() {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 
-	// Канал для завершения сервера
-	shutdownChan := make(chan struct{})
-
 	// Запуск сервера в отдельной горутине
 	go func() {
 		if err := a.Run(); err != nil {
 			log.Fatal().Msgf("Server failed:  %s", err.Error())
 		}
-		close(shutdownChan)
 	}()
 
-	go func() {
-		sig := <-sigChan
-		log.Info().Msgf("Received signal: %s", sig)
+	// Ожидание сигнала завершения
+	sig := <-sigChan
+	log.Info().Msgf("Server failed:  %s", sig)
 
-		// Завершение сервера
-		a.Stop()
+	// Завершение сервера
+	a.Stop()
 
-		close(shutdownChan)
-	}()
-
-	<-shutdownChan
-	log.Info().Msg("Server gracefully stopped")
+	// Завершение процесса с кодом 0
+	os.Exit(0)
 }
