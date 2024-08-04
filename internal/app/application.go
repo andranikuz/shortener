@@ -11,7 +11,8 @@ import (
 
 // Application структура используется для запуска приложения. В ней инициализуется контейнер.
 type Application struct {
-	cnt *container.Container
+	cnt    *container.Container
+	server *http.Server
 }
 
 // NewApplication создает новое приложение.
@@ -33,12 +34,17 @@ func NewApplication() (*Application, error) {
 // Run запускет http сервер.
 func (a *Application) Run() error {
 	httpHandler := rest.NewHTTPHandler(a.cnt)
+	a.server = &http.Server{
+		Addr:    config.Config.ServerAddress,
+		Handler: httpHandler.Router(),
+	}
+
 	if config.Config.EnableHTTPS {
 		pwd, _ := os.Getwd()
 		path := pwd + `/internal/config/crt/`
 
-		return http.ListenAndServeTLS(config.Config.ServerAddress, path+"server.crt", path+"server.key", httpHandler.Router())
+		return a.server.ListenAndServeTLS(path+"server.crt", path+"server.key")
 	} else {
-		return http.ListenAndServe(config.Config.ServerAddress, httpHandler.Router())
+		return a.server.ListenAndServe()
 	}
 }

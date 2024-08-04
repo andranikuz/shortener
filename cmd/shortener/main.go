@@ -20,7 +20,8 @@ func main() {
 	log.Info().Msg("Build version: " + buildVersion)
 	log.Info().Msg("Build date: " + buildDate)
 	log.Info().Msg("Build commit: " + buildCommit)
+
 	if err := a.Run(); err != nil {
-		log.Fatal().Msg(err.Error())
+		log.Fatal().Msgf("Server failed:  %s", err.Error())
 	}
 }
