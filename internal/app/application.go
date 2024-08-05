@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/andranikuz/shortener/internal/api/rest"
 	"github.com/andranikuz/shortener/internal/config"
@@ -10,12 +11,15 @@ import (
 
 // Application структура используется для запуска приложения. В ней инициализуется контейнер.
 type Application struct {
-	cnt *container.Container
+	cnt    *container.Container
+	server *http.Server
 }
 
 // NewApplication создает новое приложение.
 func NewApplication() (*Application, error) {
-	config.Init()
+	if err := config.Init(); err != nil {
+		return nil, err
+	}
 	cnt, err := container.NewContainer()
 	if err != nil {
 		return nil, err
@@ -30,5 +34,17 @@ func NewApplication() (*Application, error) {
 // Run запускет http сервер.
 func (a *Application) Run() error {
 	httpHandler := rest.NewHTTPHandler(a.cnt)
-	return http.ListenAndServe(config.Config.ServerAddress, httpHandler.Router())
+	a.server = &http.Server{
+		Addr:    config.Config.ServerAddress,
+		Handler: httpHandler.Router(),
+	}
+
+	if config.Config.EnableHTTPS {
+		pwd, _ := os.Getwd()
+		path := pwd + `/internal/config/crt/`
+
+		return a.server.ListenAndServeTLS(path+"server.crt", path+"server.key")
+	} else {
+		return a.server.ListenAndServe()
+	}
 }
