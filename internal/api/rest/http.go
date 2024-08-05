@@ -47,6 +47,7 @@ func (h HTTPHandler) Router() chi.Router {
 	})
 	r.Get("/api/user/urls", h.GetUserURLsHandler)
 	r.Delete("/api/user/urls", h.DeleteURLsHandler)
+	r.Get("/api/internal/stats", h.GetInternalStats)
 	r.Mount("/debug", middleware.Profiler())
 
 	return r

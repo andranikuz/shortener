@@ -127,3 +127,13 @@ func (storage *FileStorage) DeleteURLs(ctx context.Context, ids []string, userID
 func (storage FileStorage) Ping() error {
 	return nil
 }
+
+// GetUsersCount метод получения количества пользователей.
+func (storage FileStorage) GetUsersCount(ctx context.Context) (int, error) {
+	return 0, nil
+}
+
+// GetURLsCount метод получения количества записей.
+func (storage FileStorage) GetURLsCount(ctx context.Context) (int, error) {
+	return 0, nil
+}
