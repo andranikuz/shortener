@@ -13,6 +13,7 @@ type Shortener interface {
 	GenerateShortURLBatch(ctx context.Context, items []OriginalItem, userID string) ([]ShortenItem, error)
 	GetFullURL(ctx context.Context, id string) (string, error)
 	GetUserURLs(ctx context.Context, userID string) ([]models.URL, error)
+	GetInternalStats(ctx context.Context) (int64, int64, error)
 }
 
 // OriginalItem структура оригинального URL.

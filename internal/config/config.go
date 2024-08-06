@@ -14,6 +14,7 @@ type AppConfig struct {
 	FileStoragePath string `json:"file_storage_path"`
 	DatabaseDSN     string `json:"database_dsn"`
 	EnableHTTPS     bool   `json:"enable_https"`
+	TrustedSubnet   string `json:"trusted_subnet"`
 }
 
 // Config публичная переменная, которой пользуются приложения дл получения параметров конфигурации приложения.
@@ -39,6 +40,7 @@ func Init() error {
 		flag.StringVar(&Config.FileStoragePath, "f", "/tmp/short-url-db.json", "file storage path")
 		flag.StringVar(&Config.DatabaseDSN, "d", "", "database dsn")
 		flag.BoolVar(&Config.EnableHTTPS, "s", false, "enable https")
+		flag.StringVar(&Config.TrustedSubnet, "t", "", "trusted subnet")
 		flag.Parse()
 
 		if envRunAddr := os.Getenv("SERVER_ADDRESS"); envRunAddr != "" {
@@ -56,6 +58,11 @@ func Init() error {
 		if enableHTTPS := os.Getenv("ENABLE_HTTPS"); enableHTTPS == "true" {
 			Config.EnableHTTPS = true
 		}
+
+		if trustedSubnet := os.Getenv("ENABLE_HTTPS"); trustedSubnet != "" {
+			Config.TrustedSubnet = trustedSubnet
+		}
+
 		Config.isInit = true
 	}
 

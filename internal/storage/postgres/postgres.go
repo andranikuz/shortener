@@ -160,3 +160,27 @@ func (storage *PostgresStorage) DeleteURLs(ctx context.Context, ids []string, us
 func (storage PostgresStorage) Ping() error {
 	return storage.DB.Ping()
 }
+
+// GetUsersCount метод получения количества пользователей.
+func (storage PostgresStorage) GetUsersCount(ctx context.Context) (int64, error) {
+	row := storage.DB.QueryRowContext(ctx, `SELECT COUNT(DISTINCT(user_id)) FROM url `)
+	var count int64
+	err := row.Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+// GetURLsCount метод получения количества записей.
+func (storage PostgresStorage) GetURLsCount(ctx context.Context) (int64, error) {
+	row := storage.DB.QueryRowContext(ctx, `SELECT COUNT(user_id) FROM url`)
+	var count int64
+	err := row.Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}

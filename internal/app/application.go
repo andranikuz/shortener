@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 
+	grpcserver "github.com/andranikuz/shortener/internal/api/grpc"
 	"github.com/andranikuz/shortener/internal/api/rest"
 	"github.com/andranikuz/shortener/internal/config"
 	"github.com/andranikuz/shortener/internal/container"
@@ -38,6 +39,12 @@ func (a *Application) Run() error {
 		Addr:    config.Config.ServerAddress,
 		Handler: httpHandler.Router(),
 	}
+
+	go func() {
+		if err := grpcserver.StartGRPCServer(`:3200`, a.cnt); err != nil {
+			panic(err)
+		}
+	}()
 
 	if config.Config.EnableHTTPS {
 		pwd, _ := os.Getwd()
