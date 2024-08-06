@@ -7,7 +7,7 @@ import (
 )
 
 // GetInternalStats метод получения статистики сервиса.
-func (s Shortener) GetInternalStats(ctx context.Context) (int, int, error) {
+func (s Shortener) GetInternalStats(ctx context.Context) (int64, int64, error) {
 	urls, err := s.storage.GetURLsCount(ctx)
 	if err != nil {
 		log.Info().Msg(err.Error())

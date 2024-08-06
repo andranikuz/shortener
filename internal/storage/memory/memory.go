@@ -137,11 +137,11 @@ func (storage MemoryStorage) Ping() error {
 }
 
 // GetUsersCount метод получения количества пользователей.
-func (storage MemoryStorage) GetUsersCount(ctx context.Context) (int, error) {
+func (storage MemoryStorage) GetUsersCount(ctx context.Context) (int64, error) {
 	return 0, nil
 }
 
 // GetURLsCount метод получения количества записей.
-func (storage MemoryStorage) GetURLsCount(ctx context.Context) (int, error) {
+func (storage MemoryStorage) GetURLsCount(ctx context.Context) (int64, error) {
 	return 0, nil
 }

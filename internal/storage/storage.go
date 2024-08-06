@@ -14,7 +14,7 @@ type Storage interface {
 	GetByFullURL(ctx context.Context, id string) (*models.URL, error)
 	SaveBatch(ctx context.Context, urls []models.URL) error
 	DeleteURLs(ctx context.Context, ids []string, userID string) error
-	GetUsersCount(ctx context.Context) (int, error)
-	GetURLsCount(ctx context.Context) (int, error)
+	GetUsersCount(ctx context.Context) (int64, error)
+	GetURLsCount(ctx context.Context) (int64, error)
 	Ping() error
 }

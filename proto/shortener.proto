@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+option go_package = "internal/api/grpc/proto;proto";
+
+package grpc;
+
+service ShortenerService {
+  rpc GenerateShortURL(GenerateShortURLRequest) returns (GenerateShortURLResponse);
+  rpc GetFullURL(GetFullURLRequest) returns (GetFullURLResponse);
+  rpc GenerateShortURLBatch(GenerateShortURLBatchRequest) returns (GenerateShortURLBatchResponse);
+  rpc Ping(PingRequest) returns (PingResponse);
+  rpc GetUserURLs(GetUserURLsRequest) returns (GetUserURLsResponse);
+  rpc DeleteURLs(DeleteURLsRequest) returns (DeleteURLsResponse);
+  rpc GetInternalStats(GetInternalStatsRequest) returns (GetInternalStatsResponse);
+}
+
+message GenerateShortURLRequest {
+  string user_id = 1;
+  string url = 2;
+}
+
+message GenerateShortURLResponse {
+  string result = 1;
+}
+
+message GetFullURLRequest {
+  string id = 1;
+}
+
+message GetFullURLResponse {
+  string full_url = 1;
+}
+
+message OriginalItem {
+  string correlation_id = 1;
+  string original_url = 2;
+}
+
+message ShortenItem {
+  string correlation_id = 1;
+  string short_url = 2;
+}
+
+message GenerateShortURLBatchRequest {
+  repeated OriginalItem items = 1;
+  string user_id = 2;
+}
+
+message GenerateShortURLBatchResponse {
+  repeated ShortenItem items = 1;
+}
+
+message PingRequest {}
+
+message PingResponse {
+  string message = 1;
+}
+
+message GetUserURLsRequest {
+  string user_id = 1;
+}
+
+message GetUserURLsHandlerItem {
+  string original_url = 1;
+  string short_url = 2;
+}
+
+message GetUserURLsResponse {
+  repeated GetUserURLsHandlerItem urls = 1;
+}
+
+message DeleteURLsRequest {
+  repeated string urls = 1;
+  string user_id = 2;
+}
+
+message DeleteURLsResponse {}
+
+message GetInternalStatsRequest {}
+
+message GetInternalStatsResponse {
+  int64 url_count = 1;
+  int64 user_count = 2;
+}

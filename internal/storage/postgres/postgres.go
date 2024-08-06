@@ -162,9 +162,9 @@ func (storage PostgresStorage) Ping() error {
 }
 
 // GetUsersCount метод получения количества пользователей.
-func (storage PostgresStorage) GetUsersCount(ctx context.Context) (int, error) {
+func (storage PostgresStorage) GetUsersCount(ctx context.Context) (int64, error) {
 	row := storage.DB.QueryRowContext(ctx, `SELECT COUNT(DISTINCT(user_id)) FROM url `)
-	var count int
+	var count int64
 	err := row.Scan(&count)
 	if err != nil {
 		return 0, err
@@ -174,9 +174,9 @@ func (storage PostgresStorage) GetUsersCount(ctx context.Context) (int, error) {
 }
 
 // GetURLsCount метод получения количества записей.
-func (storage PostgresStorage) GetURLsCount(ctx context.Context) (int, error) {
+func (storage PostgresStorage) GetURLsCount(ctx context.Context) (int64, error) {
 	row := storage.DB.QueryRowContext(ctx, `SELECT COUNT(user_id) FROM url`)
-	var count int
+	var count int64
 	err := row.Scan(&count)
 	if err != nil {
 		return 0, err

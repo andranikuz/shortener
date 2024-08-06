@@ -14,8 +14,8 @@ import (
 
 // GetInternalStatsResponse структура ответа.
 type GetInternalStatsResponse struct {
-	URLs  int `json:"urls"`
-	Users int `json:"users"`
+	URLs  int64 `json:"urls"`
+	Users int64 `json:"users"`
 }
 
 // GetInternalStats хендлер получения статистики сервиса.
